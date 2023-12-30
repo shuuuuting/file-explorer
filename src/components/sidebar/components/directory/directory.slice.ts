@@ -12,7 +12,16 @@ const initialState: DirectoryState = {
     id: 0,
     name: "root",
     type: DirType.FOLDER,
-    children: []
+    children: [
+      {
+        id: 1,
+        name: "happy",
+        type: DirType.JS,
+        children: [
+          
+        ]
+      }
+    ]
   }
 }
 
