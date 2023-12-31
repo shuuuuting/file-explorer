@@ -1,4 +1,30 @@
+import { DirType } from "./directory.config"
 import { IDirectory } from "./directory.type"
+
+export const renameExistingDir = (
+  root: IDirectory,
+  id: string,
+  newDirName: string
+) : IDirectory => {
+  if (root.id === id) {
+    root.name = newDirName
+    if (root.type !== DirType.FOLDER) {
+      const fileType = newDirName.split(".").pop()
+      if (!fileType || !([DirType.JS, DirType.JSON, DirType.TS, DirType.TXT] as string[]).includes(fileType)) {
+        root.type = DirType.OTHERS
+      } else {
+        root.type = fileType as DirType 
+      }
+    }
+    return root
+  }
+
+  root.children.map((newRoot: IDirectory) => {
+    return renameExistingDir(newRoot, id, newDirName)
+  })
+
+  return root
+}
 
 export const insertNewDir = (
   root: IDirectory,

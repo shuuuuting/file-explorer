@@ -9,22 +9,36 @@ import { FiTrash } from "react-icons/fi"
 import { DirType } from "./directory.config"
 import { useState } from "react"
 import { useAppDispatch } from "#app/hooks"
-import { addNewDir } from "./directory.slice"
+import { addNewDir, renameDir } from "./directory.slice"
 
 export const Directory = ({ data }: { data: IDirectory }) => {
   const dispatch = useAppDispatch()
   const isFolderType = data.type === DirType.FOLDER
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isRenaming, setIsRenaming] = useState<boolean>(false)
   const [addState, setAddState] = useState<{ isEditing: boolean, isFolder: boolean }>({
     isEditing: false, isFolder: false
   })
+
+  const handleRename = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation()
+    setIsRenaming(true)
+  }
+
+  const handleRenameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && e.currentTarget.value) {
+      const newDirName = e.currentTarget.value
+      dispatch(renameDir({ id: data.id, newDirName }))
+      setIsRenaming(false)
+    }
+  }
 
   const handleAdd = (e: React.MouseEvent<HTMLElement>, isFolder: boolean) => {
     e.stopPropagation()
     setAddState({ isEditing: true, isFolder })
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, isFolder: boolean) => {
+  const handleAddKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, isFolder: boolean) => {
     if (e.key === "Enter" && e.currentTarget.value) {
       const newDirName = e.currentTarget.value
       let newDir: IDirectory = {
@@ -58,33 +72,48 @@ export const Directory = ({ data }: { data: IDirectory }) => {
             : <MdInsertDriveFile />
           }
         </span>
-        <span className="sidebar-item-text">
-          {data.name}
-        </span>
-        <span className="sidebar-item-action">
-          <span className="sidebar-item-button">
-            <FiEdit2 />
+        {isRenaming
+          ? <input 
+              autoFocus
+              className="sidebar-input-text" 
+              defaultValue={data.name}
+              type="text"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => handleRenameKeyDown(e)}
+            />
+          : <span className="sidebar-item-text">
+              {data.name}
+            </span>
+        }
+        {isRenaming || 
+          <span className="sidebar-item-action">
+            <span 
+              className="sidebar-item-button"
+              onClick={handleRename}
+            >
+              <FiEdit2 />
+            </span>
+            {isFolderType &&
+              <>
+                <span
+                  className="sidebar-item-button"
+                  onClick={(e) => handleAdd(e, true)}
+                >
+                  <FiFolderPlus />
+                </span>
+                <span
+                  className="sidebar-item-button"
+                  onClick={(e) => handleAdd(e, false)}
+                >
+                  <FiFilePlus />
+                </span>
+              </>
+            }
+            <span className="sidebar-item-button">
+              <FiTrash />
+            </span>
           </span>
-          {isFolderType &&
-            <>
-              <span
-                className="sidebar-item-button"
-                onClick={(e) => handleAdd(e, true)}
-              >
-                <FiFolderPlus />
-              </span>
-              <span
-                className="sidebar-item-button"
-                onClick={(e) => handleAdd(e, false)}
-              >
-                <FiFilePlus />
-              </span>
-            </>
-          }
-          <span className="sidebar-item-button">
-            <FiTrash />
-          </span>
-        </span>
+        }
       </div>
       <div style={{ paddingLeft: 6 }}>
         {addState.isEditing &&
@@ -96,7 +125,7 @@ export const Directory = ({ data }: { data: IDirectory }) => {
               autoFocus
               className="sidebar-input-text" 
               type="text"
-              onKeyDown={(e) => handleKeyDown(e, addState.isFolder)}
+              onKeyDown={(e) => handleAddKeyDown(e, addState.isFolder)}
             />
           </div>
         }
