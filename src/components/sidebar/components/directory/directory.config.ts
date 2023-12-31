@@ -1,8 +1,8 @@
 export enum DirType {
+  FOLDER = "folder",
   JS = "js",
-  TS = "ts",
   JSON = "json",
+  TS = "ts",
   TXT = "txt",
-  OTHERS = "others",
-  FOLDER = "folder"
+  OTHERS = "others"
 }

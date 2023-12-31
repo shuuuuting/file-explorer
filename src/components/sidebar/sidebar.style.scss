@@ -11,6 +11,7 @@
       font-size: 12px;
       font-weight: bolder;
       padding: 8px 12px;
+      user-select: none;
       width: 100%;
     }
   
@@ -33,6 +34,7 @@
         display: inline-block; 
         overflow: hidden;
         text-overflow: ellipsis;
+        user-select: none;
         white-space: nowrap;
       }
   
@@ -42,6 +44,11 @@
   
       &:hover {
         background-color: var(--secondary-500);
+
+        .sidebar-item-icon,
+        .sidebar-item-text {
+          color: var(--primary-0);
+        }
   
         .sidebar-item-action {
           background-color: var(--secondary-500);
@@ -63,5 +70,38 @@
           }
         }
       } 
+    }
+
+    .sidebar-input {
+      align-items: center; 
+      color: var(--primary-100);
+      display: flex;
+      padding: 4px 12px;
+      align-items: center; 
+
+      .sidebar-input-icon {
+        align-items: center; 
+        display: flex;
+        margin-right: 3px;
+      }
+      
+      .sidebar-input-text {
+        align-items: center; 
+        border: 1px solid var(--secondary-200);
+        border-radius: 4px;
+        color: var(--primary-100);
+        display: flex; 
+        font-size: 12px;
+        font-weight: bolder;
+        height: fit-content;
+        padding: 4px;
+        margin: 0;
+
+        &:active,
+        &:focus,
+        &:visited {
+          text-decoration: none;
+        }
+      }
     }
   }
