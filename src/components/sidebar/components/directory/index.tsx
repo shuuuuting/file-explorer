@@ -17,9 +17,8 @@ export const Directory = ({ data }: { data: IDirectory }) => {
   const isFolderType = data.type === DirType.FOLDER
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [isRenaming, setIsRenaming] = useState<boolean>(false)
-  const [addState, setAddState] = useState<{ isEditing: boolean, isFolder: boolean }>({
-    isEditing: false, isFolder: false
-  })
+  const defaultAddState = { isEditing: false, isFolder: false }
+  const [addState, setAddState] = useState<{ isEditing: boolean, isFolder: boolean }>(defaultAddState)
 
   const handleRename = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
@@ -54,7 +53,7 @@ export const Directory = ({ data }: { data: IDirectory }) => {
       } 
 
       dispatch(addDir({ parentId: data.id, newDir }))
-      setAddState({ isEditing: false, isFolder: false })
+      setAddState(defaultAddState)
       if (!isOpen) setIsOpen(true)
     }
   }
@@ -79,6 +78,7 @@ export const Directory = ({ data }: { data: IDirectory }) => {
               className="sidebar-input-text" 
               defaultValue={data.name}
               type="text"
+              onBlur={() => setIsRenaming(false)}
               onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => handleRenameKeyDown(e)}
             />
@@ -131,6 +131,7 @@ export const Directory = ({ data }: { data: IDirectory }) => {
               autoFocus
               className="sidebar-input-text" 
               type="text"
+              onBlur={() => setAddState(defaultAddState)}
               onKeyDown={(e) => handleAddKeyDown(e, addState.isFolder)}
             />
           </div>
