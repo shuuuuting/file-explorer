@@ -36,9 +36,14 @@ export const insertNewDir = (
 ): IDirectory => {
   if (root.id === parentId) {
     const insertIndex = root.children.findIndex((child) =>
-      newDir.name.localeCompare(child.name) < 0
+      newDir.name < child.name
     )
-    root.children.splice(insertIndex, 0, newDir)
+    
+    if (insertIndex === -1) {
+      root.children.push(newDir)
+    } else {
+      root.children.splice(insertIndex, 0, newDir)
+    }
   } else {
     root.children.forEach((newRoot: IDirectory) => {
       insertNewDir(newRoot, parentId, newDir)

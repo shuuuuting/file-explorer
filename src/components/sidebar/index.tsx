@@ -1,9 +1,9 @@
+import "./sidebar.style.scss"
+import React from "react"
 import { useAppSelector } from "../../app/hooks"
 import { Directory } from "./components/directory"
 import { selectDirectoryData, selectSearchTerm, selectShowedDirectoryData } from "./components/directory/directory.slice"
 import { Searchbox } from "./components/searchbox"
-import "./sidebar.style.scss"
-import React from "react"
 
 export const Sidebar: React.FC = () => {
   const searchTerm = useAppSelector(selectSearchTerm)
