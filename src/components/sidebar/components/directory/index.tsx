@@ -9,7 +9,8 @@ import { FiTrash } from "react-icons/fi"
 import { DirType } from "./directory.config"
 import { useState } from "react"
 import { useAppDispatch } from "#app/hooks"
-import { addNewDir, renameDir } from "./directory.slice"
+import { addDir, removeDir, renameDir } from "./directory.slice"
+import { getFileType } from "./directory.utils"
 
 export const Directory = ({ data }: { data: IDirectory }) => {
   const dispatch = useAppDispatch()
@@ -49,18 +50,18 @@ export const Directory = ({ data }: { data: IDirectory }) => {
       } 
 
       if (!isFolder) {
-        const fileType = newDirName.split(".").pop()
-        if (!fileType || !([DirType.JS, DirType.JSON, DirType.TS, DirType.TXT] as string[]).includes(fileType)) {
-          newDir = { ...newDir, type: DirType.OTHERS }
-        } else {
-          newDir = { ...newDir, type: fileType as DirType }
-        }
+        newDir = { ...newDir, type: getFileType(newDirName) }
       } 
 
-      dispatch(addNewDir({ parentId: data.id, newDir }))
+      dispatch(addDir({ parentId: data.id, newDir }))
       setAddState({ isEditing: false, isFolder: false })
       if (!isOpen) setIsOpen(true)
     }
+  }
+
+  const handleRemove = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation()
+    dispatch(removeDir(data.id))
   }
 
   return (
@@ -109,9 +110,14 @@ export const Directory = ({ data }: { data: IDirectory }) => {
                 </span>
               </>
             }
-            <span className="sidebar-item-button">
-              <FiTrash />
-            </span>
+            {data.id === "0" ||
+              <span 
+                className="sidebar-item-button"
+                onClick={handleRemove}
+              >
+                <FiTrash />
+              </span>
+            }
           </span>
         }
       </div>

@@ -6,3 +6,10 @@ export enum DirType {
   TXT = "txt",
   OTHERS = "others"
 }
+
+export const SupportedFileTypes = [
+  DirType.JS, 
+  DirType.JSON, 
+  DirType.TS, 
+  DirType.TXT
+] as string[]

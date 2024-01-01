@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 import { IDirectory } from "./directory.type"
 import { RootState } from "#app/store"
 import { DirType } from "./directory.config"
-import { insertNewDir, renameExistingDir } from "./directory.utils"
+import { insertNewDir, pruneDir, updateDirName } from "./directory.utils"
 
 export interface DirectoryState {
   directoryData: IDirectory
@@ -31,23 +31,29 @@ export const directorySlice = createSlice({
   initialState,
   reducers: {
     renameDir: (state, { payload }) => {
-      state.directoryData = renameExistingDir(
+      state.directoryData = updateDirName(
         state.directoryData,
         payload.id,
         payload.newDirName
       )
     },
-    addNewDir: (state, { payload }) => {
+    addDir: (state, { payload }) => {
       state.directoryData = insertNewDir(
         state.directoryData,
         payload.parentId,
         payload.newDir
       )
     },
+    removeDir: (state, { payload }) => {
+      state.directoryData = pruneDir(
+        state.directoryData, 
+        payload
+      )
+    },
   },
 })
 
-export const { renameDir, addNewDir } = directorySlice.actions
+export const { renameDir, addDir, removeDir } = directorySlice.actions
 
 export const selectDirectoryData = (state: RootState) => state.directory.directoryData
 
