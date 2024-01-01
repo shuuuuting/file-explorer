@@ -1,12 +1,12 @@
 .sidebar-container {
     background-color: var(--primary-500);
-    border-right: var(--primary-200) solid;
+    border-right: 2px var(--primary-200) solid;
     height: 100vh;
     min-width: 200px;
     width: 20%;
   
     .sidebar-title {
-      border-bottom: var(--primary-200) solid;
+      border-bottom: 1px var(--primary-200) solid;
       color: var(--primary-100);
       font-size: 12px;
       font-weight: bolder;

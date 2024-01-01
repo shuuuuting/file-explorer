@@ -1,12 +1,12 @@
 import React from "react"
 import { Sidebar } from "./components/sidebar"
-import { Editor } from "./components/editor"
+import { Editpane } from "./components/editpane"
 
 const App: React.FC = () => {
   return (
     <div className="app-container" style={{ display: "flex" }}>
       <Sidebar />
-      <Editor />
+      <Editpane />
     </div>
   )
 }

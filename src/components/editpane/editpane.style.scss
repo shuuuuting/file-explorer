@@ -1,0 +1,46 @@
+.editpane-container {
+  background-color: var(--primary-400);
+  flex: 1;
+
+  .tabs-container {
+    color: var(--primary-100);
+    display: flex;
+    font-size: 12px;
+    font-weight: bolder;
+    height: 35px;
+
+    .tab-item {
+      border: 1px var(--primary-300) solid;
+      border-top: none;
+      display: flex;
+      padding: 8px 12px;
+
+      &.active-tab {
+        background-color: var(--primary-300);
+        position: relative;
+
+        &::before {
+          background-color: var(--secondary-200);
+          content: "";
+          display: block;
+          left: -2px;
+          top: 0;
+          height: 3px;
+          width: calc(100% + 4px);
+          position: absolute;
+        }
+      }
+
+      .tab-item-button {
+        align-items: center;
+        display: flex;
+        margin-left: 3px;
+      }
+    }
+  }
+
+  .editpane-editor {
+    padding-top: 8px;
+    height: calc(100% - 35px);
+  }
+}
