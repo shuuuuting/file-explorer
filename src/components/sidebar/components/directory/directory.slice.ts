@@ -2,10 +2,12 @@ import { createSlice } from "@reduxjs/toolkit"
 import { IDirectory } from "./directory.type"
 import { RootState } from "#app/store"
 import { DirType } from "./directory.config"
-import { insertNewDir, pruneDir, updateDirName } from "./directory.utils"
+import { filterDirs, insertNewDir, pruneDir, updateDirName } from "./directory.utils"
 
 export interface DirectoryState {
-  directoryData: IDirectory
+  directoryData: IDirectory,
+  showedDirectoryData: IDirectory | undefined,
+  searchTerm: string
 }
 
 const initialState: DirectoryState = {
@@ -19,11 +21,28 @@ const initialState: DirectoryState = {
         name: "happy",
         type: DirType.JS,
         children: [
+          {
+            id: "11",
+            name: "happy11",
+            type: DirType.JS,
+            children: [
+              
+            ]
+          }
+        ]
+      },
+      {
+        id: "2",
+        name: "sappy",
+        type: DirType.JS,
+        children: [
           
         ]
       }
     ]
-  }
+  },
+  showedDirectoryData: undefined,
+  searchTerm: ""
 }
 
 export const directorySlice = createSlice({
@@ -50,11 +69,20 @@ export const directorySlice = createSlice({
         payload
       )
     },
+    searchDirs: (state, { payload }) => {
+      state.searchTerm = payload
+      state.showedDirectoryData = filterDirs(
+        state.directoryData,
+        payload
+      )
+    }
   },
 })
 
-export const { renameDir, addDir, removeDir } = directorySlice.actions
+export const { renameDir, addDir, removeDir, searchDirs } = directorySlice.actions
 
 export const selectDirectoryData = (state: RootState) => state.directory.directoryData
+export const selectShowedDirectoryData = (state: RootState) => state.directory.showedDirectoryData
+export const selectSearchTerm = (state: RootState) => state.directory.searchTerm
 
 export default directorySlice.reducer

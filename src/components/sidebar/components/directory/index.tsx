@@ -7,18 +7,25 @@ import { FiFolderPlus } from "react-icons/fi"
 import { FiFilePlus } from "react-icons/fi"
 import { FiTrash } from "react-icons/fi"
 import { DirType } from "./directory.config"
-import { useState } from "react"
-import { useAppDispatch } from "#app/hooks"
-import { addDir, removeDir, renameDir } from "./directory.slice"
+import { useEffect, useState } from "react"
+import { useAppDispatch, useAppSelector } from "#app/hooks"
+import { addDir, removeDir, renameDir, selectSearchTerm } from "./directory.slice"
 import { getFileType } from "./directory.utils"
 
 export const Directory = ({ data }: { data: IDirectory }) => {
   const dispatch = useAppDispatch()
+  const searchTerm = useAppSelector(selectSearchTerm)
   const isFolderType = data.type === DirType.FOLDER
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [isRenaming, setIsRenaming] = useState<boolean>(false)
   const defaultAddState = { isEditing: false, isFolder: false }
   const [addState, setAddState] = useState<{ isEditing: boolean, isFolder: boolean }>(defaultAddState)
+
+  useEffect(() => {
+    if (searchTerm) {
+      setIsOpen(!data.name.includes(searchTerm))
+    } 
+  }, [searchTerm])
 
   const handleRename = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
@@ -65,7 +72,7 @@ export const Directory = ({ data }: { data: IDirectory }) => {
 
   return (
     <>
-      <div className="sidebar-item" onClick={() => setIsOpen(!isOpen)}>
+      <div className="sidebar-item" onClick={() => isFolderType && setIsOpen(!isOpen)}>
         <span className="sidebar-item-icon">
           {isFolderType
             ? isOpen ? <RiFolderOpenFill /> : <MdFolder />

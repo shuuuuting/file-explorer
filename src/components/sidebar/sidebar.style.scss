@@ -14,6 +14,14 @@
       user-select: none;
       width: 100%;
     }
+
+    .sidebar-hint {
+      color: var(--primary-200);
+      font-size: 12px;
+      font-weight: bolder;
+      margin-top: 24px;
+      text-align: center;
+    }
   
     .sidebar-item {
       align-items: center; 
@@ -70,8 +78,9 @@
           }
         }
       } 
-
-    .sidebar-input-text {
+      
+      .sidebar-search-text,
+      .sidebar-input-text {
         align-items: center; 
         border: 1px solid var(--secondary-200);
         border-radius: 4px;
@@ -82,6 +91,15 @@
         height: fit-content;
         padding: 4px;
         margin: 0;
+      }
+
+      .sidebar-search-text {
+        margin-top: 4px;
+        border-color: var(--secondary-300);
+        
+        &::placeholder {
+          color: var(--primary-200);
+        }
       }
     }
 

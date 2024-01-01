@@ -61,3 +61,20 @@ export const pruneDir = (root: IDirectory, id: string): IDirectory => {
 
   return root
 }
+
+export const filterDirs = (root: IDirectory, term: string): IDirectory | undefined => {
+  if (root.name.includes(term)) { 
+    return {
+      ...root,
+      children: root.children.map((child) => filterDirs(child, term)).filter(Boolean) as IDirectory[]
+    }
+  } 
+
+  const filteredChildren = root.children.map((child) => filterDirs(child, term)).filter(Boolean) as IDirectory[]
+  
+  if (filteredChildren.length > 0) {
+    return { ...root, children: filteredChildren }
+  }
+  
+  return undefined
+}
