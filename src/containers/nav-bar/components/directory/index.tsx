@@ -13,41 +13,54 @@ import { getFileType } from "./directory.utils"
 import { renameDir, addDir, removeDir, selectSearchTerm } from "#containers/nav-bar/nav-bar.slice"
 import { addFileContent, addShowedTab, renameTab, saveActiveTabId, selectFileById, selectShowedTabById } from "#containers/edit-pane/edit-pane.slice"
 import { InitContent } from "#containers/edit-pane/components/editor/editor.config"
+import { ContextMenu } from "../context-menu"
 
-export const Directory = ({ data }: { data: IDirectory }) => {
+export const Directory = ({ dirData }: { dirData: IDirectory }) => {
   const dispatch = useAppDispatch()
   const searchTerm = useAppSelector(selectSearchTerm)
-  const fileContent = useAppSelector(state => selectFileById(state, data.id)) 
-  const showedTab = useAppSelector(state => selectShowedTabById(state, data.id))
-  const isFolderType = data.type === DirType.FOLDER
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const fileContent = useAppSelector(state => selectFileById(state, dirData.id)) 
+  const showedTab = useAppSelector(state => selectShowedTabById(state, dirData.id))
+  const isFolderType = dirData.type === DirType.FOLDER
+  const [isExpanded, setIsExpanded] = useState<boolean>(false)
+  const [isMenuShow, setIsMenuShow] = useState<boolean>(false)
   const [isRenaming, setIsRenaming] = useState<boolean>(false)
   const defaultAddState = { isEditing: false, isFolder: false }
   const [addState, setAddState] = useState<{ isEditing: boolean, isFolder: boolean }>(defaultAddState)
   
   useEffect(() => {
+    const handleClickElsewhere = () => setIsMenuShow(false)
+    window.addEventListener("click", handleClickElsewhere)
+    return () => removeEventListener("click", handleClickElsewhere)
+  }, [])
+  
+  useEffect(() => {
     if (searchTerm) {
-      setIsOpen(!data.name.includes(searchTerm))
+      setIsExpanded(!dirData.name.includes(searchTerm))
     }
   }, [searchTerm])
 
   const handleClick = () => {
     if (isFolderType) {
-      setIsOpen(!isOpen)
+      setIsExpanded(!isExpanded)
     } else {
       if (fileContent) {
         if (!showedTab) {
-          dispatch(addShowedTab({ id: data.id, name: data.name }))
+          dispatch(addShowedTab({ id: dirData.id, name: dirData.name }))
         }
       } else {
         dispatch(addFileContent({
-          id: data.id, 
-          content: InitContent[data.type as keyof typeof InitContent]
+          id: dirData.id, 
+          content: InitContent[dirData.type as keyof typeof InitContent]
         }))
-        dispatch(addShowedTab({ id: data.id, name: data.name }))
+        dispatch(addShowedTab({ id: dirData.id, name: dirData.name }))
       }
-      dispatch(saveActiveTabId(data.id))
+      dispatch(saveActiveTabId(dirData.id))
     }
+  }
+
+  const handleRightClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    setIsMenuShow(true)
   }
 
   const handleRename = (e: React.MouseEvent<HTMLElement>) => {
@@ -57,7 +70,7 @@ export const Directory = ({ data }: { data: IDirectory }) => {
 
   const handleRenameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && e.currentTarget.value) {
-      const renameInfo = { id: data.id, newName: e.currentTarget.value }
+      const renameInfo = { id: dirData.id, newName: e.currentTarget.value }
       dispatch(renameDir(renameInfo))
       if (!isFolderType) dispatch(renameTab(renameInfo))
       setIsRenaming(false)
@@ -90,23 +103,27 @@ export const Directory = ({ data }: { data: IDirectory }) => {
         dispatch(saveActiveTabId(newDir.id))
       } 
 
-      dispatch(addDir({ parentId: data.id, newDir }))
+      dispatch(addDir({ parentId: dirData.id, newDir }))
       setAddState(defaultAddState)
-      if (!isOpen) setIsOpen(true)
+      if (!isExpanded) setIsExpanded(true)
     }
   }
 
   const handleRemove = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
-    dispatch(removeDir(data.id))
+    dispatch(removeDir(dirData.id))
   }
 
   return (
     <>
-      <div className="navbar-item" onClick={handleClick}>
+      <div 
+        className="navbar-item" 
+        onClick={handleClick}
+        onContextMenu={handleRightClick}
+      >
         <span className="navbar-item-icon">
           {isFolderType
-            ? isOpen ? <RiFolderOpenFill /> : <MdFolder />
+            ? isExpanded ? <RiFolderOpenFill /> : <MdFolder />
             : <MdInsertDriveFile />
           }
         </span>
@@ -114,14 +131,14 @@ export const Directory = ({ data }: { data: IDirectory }) => {
           ? <input 
               autoFocus
               className="navbar-input-text" 
-              defaultValue={data.name}
+              defaultValue={dirData.name}
               type="text"
               onBlur={() => setIsRenaming(false)}
               onClick={(e) => e.stopPropagation()}
-              onKeyDown={(e) => handleRenameKeyDown(e)}
+              onKeyDown={handleRenameKeyDown}
             />
           : <span className="navbar-item-text">
-              {data.name}
+              {dirData.name}
             </span>
         }
         {isRenaming || 
@@ -148,7 +165,7 @@ export const Directory = ({ data }: { data: IDirectory }) => {
                 </span>
               </>
             }
-            {data.id === "0" ||
+            {dirData.id === "0" ||
               <span 
                 className="navbar-item-button"
                 onClick={handleRemove}
@@ -174,12 +191,13 @@ export const Directory = ({ data }: { data: IDirectory }) => {
             />
           </div>
         }
-        {isOpen &&
-          data.children.map((child: IDirectory) => (
-            <Directory data={child} key={child.id} />
+        {isExpanded &&
+          dirData.children.map((child: IDirectory) => (
+            <Directory dirData={child} key={child.id} />
           ))
         }
       </div>
+      {isMenuShow && <ContextMenu dirData={dirData}/>}
     </>
   )
 }

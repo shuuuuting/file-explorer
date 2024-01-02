@@ -1,7 +1,7 @@
 export enum InitContent {
-  js = `console.log("Hello, JavaScript!")`,
+  js = `console.log("Hello, JavaScript!");`,
   json = `{\n\t"id": "0",\n\t"name": "Hello, Json!"\n}`,
-  ts = `console.log("Hello, TypeScript!")`,
+  ts = `console.log("Hello, TypeScript!");`,
   txt = "Feel free to add any text!",
   others = ""
 }

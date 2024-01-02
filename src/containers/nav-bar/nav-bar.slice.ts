@@ -7,6 +7,7 @@ import { filterDirs, insertNewDir, pruneDirById, updateDirNameById } from "./com
 export interface NavBarState {
   dirData: IDirectory,
   showedDirData: IDirectory | undefined,
+  cachedDirData: IDirectory | undefined,
   searchTerm: string
 }
 
@@ -18,8 +19,8 @@ const initialState: NavBarState = {
     children: [
       {
         id: "1",
-        name: "happy.js",
-        type: DirType.JS,
+        name: "happy",
+        type: DirType.FOLDER,
         children: [
           {
             id: "11",
@@ -42,6 +43,7 @@ const initialState: NavBarState = {
     ]
   },
   showedDirData: undefined,
+  cachedDirData: undefined,
   searchTerm: ""
 }
 
@@ -69,6 +71,9 @@ export const navBarSlice = createSlice({
         payload
       )
     },
+    saveCachedDir: (state, { payload }) => {
+      state.cachedDirData = payload
+    },
     searchDirs: (state, { payload }) => {
       state.searchTerm = payload
       state.showedDirData = filterDirs(
@@ -79,10 +84,11 @@ export const navBarSlice = createSlice({
   },
 })
 
-export const { renameDir, addDir, removeDir, searchDirs } = navBarSlice.actions
+export const { renameDir, addDir, removeDir, saveCachedDir, searchDirs } = navBarSlice.actions
 
 export const selectDirData = (state: RootState) => state.navbar.dirData
 export const selectShowedDirData = (state: RootState) => state.navbar.showedDirData
+export const selectCachedDirData = (state: RootState) => state.navbar.cachedDirData
 export const selectSearchTerm = (state: RootState) => state.navbar.searchTerm
 
 export default navBarSlice.reducer
