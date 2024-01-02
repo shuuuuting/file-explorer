@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { IFileContent, ITab } from "./edit-pane.type"
 import { RootState } from "#app/store"
-import { updateFileContentById } from "./components/editor/editor.utils"
+import { updateFileContentById, updateTabNameById } from "./components/editor/editor.utils"
 
 export interface EditPaneState {
   activeTabId?: string,
@@ -25,6 +25,13 @@ export const editPaneSlice = createSlice({
       state.showedTabs = [...state.showedTabs, payload]
       state.activeTabId = payload.id
     },
+    renameTab: (state, { payload }) => {
+      state.showedTabs = updateTabNameById(
+        state.showedTabs,
+        payload.id,
+        payload.newName
+      )
+    },
     addFileContent: (state, { payload }) => {
       state.fileContents = [...state.fileContents, payload]
     },
@@ -39,7 +46,7 @@ export const editPaneSlice = createSlice({
   },
 })
 
-export const { saveActiveTabId, addShowedTab, addFileContent, updateFileContent } = editPaneSlice.actions
+export const { saveActiveTabId, addShowedTab, renameTab, addFileContent, updateFileContent } = editPaneSlice.actions
 
 export const selectActiveTabId = (state: RootState) => state.editpane.activeTabId
 export const selectShowedTabs = (state: RootState) => state.editpane.showedTabs

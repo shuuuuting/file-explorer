@@ -11,7 +11,7 @@ import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { getFileType } from "./directory.utils"
 import { renameDir, addDir, removeDir, selectSearchTerm } from "#containers/nav-bar/nav-bar.slice"
-import { addFileContent, addShowedTab, saveActiveTabId, selectFileById, selectShowedTabById } from "#containers/edit-pane/edit-pane.slice"
+import { addFileContent, addShowedTab, renameTab, saveActiveTabId, selectFileById, selectShowedTabById } from "#containers/edit-pane/edit-pane.slice"
 import { InitContent } from "#containers/edit-pane/components/editor/editor.config"
 
 export const Directory = ({ data }: { data: IDirectory }) => {
@@ -28,7 +28,7 @@ export const Directory = ({ data }: { data: IDirectory }) => {
   useEffect(() => {
     if (searchTerm) {
       setIsOpen(!data.name.includes(searchTerm))
-    } 
+    }
   }, [searchTerm])
 
   const handleClick = () => {
@@ -57,8 +57,9 @@ export const Directory = ({ data }: { data: IDirectory }) => {
 
   const handleRenameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && e.currentTarget.value) {
-      const newDirName = e.currentTarget.value
-      dispatch(renameDir({ id: data.id, newDirName }))
+      const renameInfo = { id: data.id, newName: e.currentTarget.value }
+      dispatch(renameDir(renameInfo))
+      if (!isFolderType) dispatch(renameTab(renameInfo))
       setIsRenaming(false)
     }
   }

@@ -13,16 +13,16 @@ export const getFileType = (fileName: string) => {
 export const updateDirNameById = (
   root: IDirectory,
   id: string,
-  newDirName: string
+  newName: string
 ): IDirectory => {
   if (root.id === id) {
-    root.name = newDirName
+    root.name = newName
     if (root.type !== DirType.FOLDER) {
-      root.type = getFileType(newDirName)
+      root.type = getFileType(newName)
     }
   } else {
     root.children.forEach((newRoot: IDirectory) => {
-      updateDirNameById(newRoot, id, newDirName)
+      updateDirNameById(newRoot, id, newName)
     })
   }
 

@@ -1,4 +1,18 @@
-import { IFileContent } from "#containers/edit-pane/edit-pane.type"
+import { IFileContent, ITab } from "#containers/edit-pane/edit-pane.type"
+
+export const updateTabNameById = (
+  showedTabs: ITab[],
+  id: string,
+  newName: string,
+): ITab[] => {
+  const index = showedTabs.findIndex(tab => tab.id === id)
+
+  if (index !== -1) {
+    showedTabs[index] = { ...showedTabs[index], name: newName } 
+  }
+
+  return showedTabs
+}
 
 export const updateFileContentById = (
   fileContents: IFileContent[],
@@ -8,7 +22,7 @@ export const updateFileContentById = (
   const index = fileContents.findIndex(fileContent => fileContent.id === id)
 
   if (index !== -1) {
-    fileContents[index] = { id, content: newContent } 
+    fileContents[index] = { ...fileContents[index], content: newContent } 
   }
 
   return fileContents

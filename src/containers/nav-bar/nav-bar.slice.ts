@@ -53,7 +53,7 @@ export const navBarSlice = createSlice({
       state.dirData = updateDirNameById(
         state.dirData,
         payload.id,
-        payload.newDirName
+        payload.newName
       )
     },
     addDir: (state, { payload }) => {
