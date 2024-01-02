@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 import { RootState } from "#app/store"
 import { IDirectory } from "./components/directory/directory.type"
 import { DirType } from "./components/directory/directory.config"
-import { filterDirs, insertNewDir, pruneDir, updateDirName } from "./components/directory/directory.utils"
+import { filterDirs, insertNewDir, pruneDirById, updateDirNameById } from "./components/directory/directory.utils"
 
 export interface NavBarState {
   dirData: IDirectory,
@@ -18,13 +18,13 @@ const initialState: NavBarState = {
     children: [
       {
         id: "1",
-        name: "happy",
+        name: "happy.js",
         type: DirType.JS,
         children: [
           {
             id: "11",
-            name: "happy11",
-            type: DirType.JS,
+            name: "happy11.ts",
+            type: DirType.TS,
             children: [
               
             ]
@@ -34,7 +34,7 @@ const initialState: NavBarState = {
       {
         id: "2",
         name: "sappy",
-        type: DirType.JS,
+        type: DirType.OTHERS,
         children: [
           
         ]
@@ -50,7 +50,7 @@ export const navBarSlice = createSlice({
   initialState,
   reducers: {
     renameDir: (state, { payload }) => {
-      state.dirData = updateDirName(
+      state.dirData = updateDirNameById(
         state.dirData,
         payload.id,
         payload.newDirName
@@ -64,7 +64,7 @@ export const navBarSlice = createSlice({
       )
     },
     removeDir: (state, { payload }) => {
-      state.dirData = pruneDir(
+      state.dirData = pruneDirById(
         state.dirData, 
         payload
       )

@@ -11,21 +11,44 @@ import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { getFileType } from "./directory.utils"
 import { renameDir, addDir, removeDir, selectSearchTerm } from "#containers/nav-bar/nav-bar.slice"
+import { addFileContent, addShowedTab, saveActiveTabId, selectFileById, selectShowedTabById } from "#containers/edit-pane/edit-pane.slice"
+import { InitContent } from "#containers/edit-pane/components/editor/editor.config"
 
 export const Directory = ({ data }: { data: IDirectory }) => {
   const dispatch = useAppDispatch()
   const searchTerm = useAppSelector(selectSearchTerm)
+  const fileContent = useAppSelector(state => selectFileById(state, data.id)) 
+  const showedTab = useAppSelector(state => selectShowedTabById(state, data.id))
   const isFolderType = data.type === DirType.FOLDER
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [isRenaming, setIsRenaming] = useState<boolean>(false)
   const defaultAddState = { isEditing: false, isFolder: false }
   const [addState, setAddState] = useState<{ isEditing: boolean, isFolder: boolean }>(defaultAddState)
-
+  
   useEffect(() => {
     if (searchTerm) {
       setIsOpen(!data.name.includes(searchTerm))
     } 
   }, [searchTerm])
+
+  const handleClick = () => {
+    if (isFolderType) {
+      setIsOpen(!isOpen)
+    } else {
+      if (fileContent) {
+        if (!showedTab) {
+          dispatch(addShowedTab({ id: data.id, name: data.name }))
+        }
+      } else {
+        dispatch(addFileContent({
+          id: data.id, 
+          content: InitContent[data.type as keyof typeof InitContent]
+        }))
+        dispatch(addShowedTab({ id: data.id, name: data.name }))
+      }
+      dispatch(saveActiveTabId(data.id))
+    }
+  }
 
   const handleRename = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
@@ -56,7 +79,14 @@ export const Directory = ({ data }: { data: IDirectory }) => {
       } 
 
       if (!isFolder) {
-        newDir = { ...newDir, type: getFileType(newDirName) }
+        const fileType = getFileType(newDirName)
+        newDir = { ...newDir, type: fileType }
+        dispatch(addFileContent({
+          id: newDir.id, 
+          content: InitContent[fileType as keyof typeof InitContent]
+        }))
+        dispatch(addShowedTab({ id: newDir.id, name: newDir.name }))
+        dispatch(saveActiveTabId(newDir.id))
       } 
 
       dispatch(addDir({ parentId: data.id, newDir }))
@@ -72,7 +102,7 @@ export const Directory = ({ data }: { data: IDirectory }) => {
 
   return (
     <>
-      <div className="navbar-item" onClick={() => isFolderType && setIsOpen(!isOpen)}>
+      <div className="navbar-item" onClick={handleClick}>
         <span className="navbar-item-icon">
           {isFolderType
             ? isOpen ? <RiFolderOpenFill /> : <MdFolder />

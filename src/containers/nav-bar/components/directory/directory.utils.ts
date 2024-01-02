@@ -10,7 +10,7 @@ export const getFileType = (fileName: string) => {
   )
 }
 
-export const updateDirName = (
+export const updateDirNameById = (
   root: IDirectory,
   id: string,
   newDirName: string
@@ -22,7 +22,7 @@ export const updateDirName = (
     }
   } else {
     root.children.forEach((newRoot: IDirectory) => {
-      updateDirName(newRoot, id, newDirName)
+      updateDirNameById(newRoot, id, newDirName)
     })
   }
 
@@ -53,14 +53,14 @@ export const insertNewDir = (
   return root
 }
 
-export const pruneDir = (root: IDirectory, id: string): IDirectory => {
+export const pruneDirById = (root: IDirectory, id: string): IDirectory => {
   const pruneIndex = root.children.findIndex((child) => child.id === id)
 
   if (pruneIndex !== -1) {
     root.children.splice(pruneIndex, 1)
   } else {
     root.children.forEach((newRoot: IDirectory) => {
-      pruneDir(newRoot, id)
+      pruneDirById(newRoot, id)
     })
   }
 
