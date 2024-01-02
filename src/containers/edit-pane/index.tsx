@@ -1,10 +1,10 @@
-import "./editpane.style.scss"
+import "./edit-pane.style.scss"
 import React from "react"
 import { Editor } from "@monaco-editor/react"
-import { InitContent } from "./editpane.config"
-import { Tab } from "./components/tab"
+import { InitContent } from "./edit-pane.config"
+import { Tab } from "./components/tab-bar"
 
-export const Editpane: React.FC = () => {
+export const EditPane: React.FC = () => {
   const handleChange = (value: string | undefined) => {
     console.log(value)
   }

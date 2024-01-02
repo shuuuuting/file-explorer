@@ -9,8 +9,8 @@ import { FiTrash } from "react-icons/fi"
 import { DirType } from "./directory.config"
 import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
-import { addDir, removeDir, renameDir, selectSearchTerm } from "./directory.slice"
 import { getFileType } from "./directory.utils"
+import { renameDir, addDir, removeDir, selectSearchTerm } from "#containers/nav-bar/nav-bar.slice"
 
 export const Directory = ({ data }: { data: IDirectory }) => {
   const dispatch = useAppDispatch()
@@ -72,8 +72,8 @@ export const Directory = ({ data }: { data: IDirectory }) => {
 
   return (
     <>
-      <div className="sidebar-item" onClick={() => isFolderType && setIsOpen(!isOpen)}>
-        <span className="sidebar-item-icon">
+      <div className="navbar-item" onClick={() => isFolderType && setIsOpen(!isOpen)}>
+        <span className="navbar-item-icon">
           {isFolderType
             ? isOpen ? <RiFolderOpenFill /> : <MdFolder />
             : <MdInsertDriveFile />
@@ -82,21 +82,21 @@ export const Directory = ({ data }: { data: IDirectory }) => {
         {isRenaming
           ? <input 
               autoFocus
-              className="sidebar-input-text" 
+              className="navbar-input-text" 
               defaultValue={data.name}
               type="text"
               onBlur={() => setIsRenaming(false)}
               onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => handleRenameKeyDown(e)}
             />
-          : <span className="sidebar-item-text">
+          : <span className="navbar-item-text">
               {data.name}
             </span>
         }
         {isRenaming || 
-          <span className="sidebar-item-action">
+          <span className="navbar-item-action">
             <span 
-              className="sidebar-item-button"
+              className="navbar-item-button"
               onClick={handleRename}
             >
               <FiEdit2 />
@@ -104,13 +104,13 @@ export const Directory = ({ data }: { data: IDirectory }) => {
             {isFolderType &&
               <>
                 <span
-                  className="sidebar-item-button"
+                  className="navbar-item-button"
                   onClick={(e) => handleAdd(e, true)}
                 >
                   <FiFolderPlus />
                 </span>
                 <span
-                  className="sidebar-item-button"
+                  className="navbar-item-button"
                   onClick={(e) => handleAdd(e, false)}
                 >
                   <FiFilePlus />
@@ -119,7 +119,7 @@ export const Directory = ({ data }: { data: IDirectory }) => {
             }
             {data.id === "0" ||
               <span 
-                className="sidebar-item-button"
+                className="navbar-item-button"
                 onClick={handleRemove}
               >
                 <FiTrash />
@@ -130,13 +130,13 @@ export const Directory = ({ data }: { data: IDirectory }) => {
       </div>
       <div style={{ paddingLeft: 6 }}>
         {addState.isEditing &&
-          <div className="sidebar-input" >
-            <span className="sidebar-input-icon">
+          <div className="navbar-input" >
+            <span className="navbar-input-icon">
               {addState.isFolder ? <MdFolder /> : <MdInsertDriveFile />}
             </span>
             <input 
               autoFocus
-              className="sidebar-input-text" 
+              className="navbar-input-text" 
               type="text"
               onBlur={() => setAddState(defaultAddState)}
               onKeyDown={(e) => handleAddKeyDown(e, addState.isFolder)}

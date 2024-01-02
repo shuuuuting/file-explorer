@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { ITab } from "./tab.type"
+import { ITab } from "./edit-pane.type"
 import { RootState } from "#app/store"
 
-export interface TabState {
+export interface EditPaneState {
   activeTabId?: string,
   showedTabs: ITab[],
 }
 
-const initialState: TabState = {
+const initialState: EditPaneState = {
   activeTabId: "0",
   showedTabs: [
     {
@@ -25,8 +25,8 @@ const initialState: TabState = {
   ]
 }
 
-export const tabSlice = createSlice({
-  name: "tab",
+export const editPaneSlice = createSlice({
+  name: "editpane",
   initialState,
   reducers: {
     saveActiveTabId: (state, { payload }) => {
@@ -40,9 +40,9 @@ export const tabSlice = createSlice({
   },
 })
 
-export const { saveActiveTabId, addShowedTab } = tabSlice.actions
+export const { saveActiveTabId, addShowedTab } = editPaneSlice.actions
 
-export const selectActiveTabId = (state: RootState) => state.tab.activeTabId
-export const selectShowedTabs = (state: RootState) => state.tab.showedTabs
+export const selectActiveTabId = (state: RootState) => state.editpane.activeTabId
+export const selectShowedTabs = (state: RootState) => state.editpane.showedTabs
 
-export default tabSlice.reducer
+export default editPaneSlice.reducer

@@ -1,8 +1,8 @@
 import React from "react"
 import { useAppSelector } from "#app/hooks"
-import { selectActiveTabId, selectShowedTabs } from "./tab.slice"
-import { ITab } from "./tab.type"
+import { ITab } from "../../edit-pane.type"
 import { MdClear } from "react-icons/md"
+import { selectActiveTabId, selectShowedTabs } from "#containers/edit-pane/edit-pane.slice"
 
 export const Tab: React.FC = () => {
   const activeTabId = useAppSelector(selectActiveTabId)

@@ -1,7 +1,7 @@
 import { useAppDispatch } from "#app/hooks"
-import { searchDirs } from "../directory/directory.slice"
+import { searchDirs } from "#containers/nav-bar/nav-bar.slice"
 
-export const Searchbox = () => {
+export const SearchBox = () => {
   const dispatch = useAppDispatch()
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -11,9 +11,9 @@ export const Searchbox = () => {
   }
 
   return (
-    <div className="sidebar-item">
+    <div className="navbar-item">
       <input 
-        className="sidebar-search-text" 
+        className="navbar-search-text" 
         type="text"
         placeholder="Search..."
         onKeyDown={(e) => handleSearch(e)}

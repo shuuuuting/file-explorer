@@ -1,11 +1,11 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
-import directoryReducer from "../components/sidebar/components/directory/directory.slice"
-import tabReducer from "#components/editpane/components/tab/tab.slice"
+import editPaneReducer from "#containers/edit-pane/edit-pane.slice"
+import navBarReducer from "#containers/nav-bar/nav-bar.slice"
 
 export const store = configureStore({
   reducer: {
-    directory: directoryReducer,
-    tab: tabReducer
+    navbar: navBarReducer,
+    editpane: editPaneReducer
   },
 })
 
