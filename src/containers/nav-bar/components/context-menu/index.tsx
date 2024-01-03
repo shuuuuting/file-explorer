@@ -9,6 +9,11 @@ const enum ButtonAction {
   PASTE = "Paste"
 }
 
+interface IButton {
+  action: ButtonAction,
+  onClick: () => void
+}
+
 const hasDuplicateName = (children: IDirectory[], dirName: string) => {
   return children.findIndex(child => child.name === dirName) !== -1
 }
@@ -61,7 +66,7 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
     }
   }
 
-  const buttons = [
+  const buttons: IButton[] = [
     {
       action: ButtonAction.CUT, 
       onClick: handleCut
@@ -79,7 +84,7 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
 
   return (
     <menu className="context-menu">
-      {buttons.map((button) => (
+      {buttons.map((button: IButton) => (
         <button 
           className="context-menu-button"
           disabled={disabled(button.action)}

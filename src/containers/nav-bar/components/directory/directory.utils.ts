@@ -35,7 +35,7 @@ export const insertNewDir = (
   newDir: IDirectory
 ): IDirectory => {
   if (root.id === parentId) {
-    const insertIndex = root.children.findIndex((child) =>
+    const insertIndex = root.children.findIndex(child =>
       newDir.name < child.name
     )
     
@@ -54,7 +54,7 @@ export const insertNewDir = (
 }
 
 export const pruneDirById = (root: IDirectory, id: string): IDirectory => {
-  const pruneIndex = root.children.findIndex((child) => child.id === id)
+  const pruneIndex = root.children.findIndex(child => child.id === id)
 
   if (pruneIndex !== -1) {
     root.children.splice(pruneIndex, 1)
@@ -71,11 +71,13 @@ export const filterDirs = (root: IDirectory, term: string): IDirectory | undefin
   if (root.name.includes(term)) { 
     return {
       ...root,
-      children: root.children.map((child) => filterDirs(child, term)).filter(Boolean) as IDirectory[]
+      children: root.children.map(child => 
+        filterDirs(child, term)).filter(Boolean) as IDirectory[]
     }
   } 
 
-  const filteredChildren = root.children.map((child) => filterDirs(child, term)).filter(Boolean) as IDirectory[]
+  const filteredChildren = root.children.map(child => 
+      filterDirs(child, term)).filter(Boolean) as IDirectory[]
   
   if (filteredChildren.length > 0) {
     return { ...root, children: filteredChildren }

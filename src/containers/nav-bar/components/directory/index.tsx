@@ -11,7 +11,7 @@ import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { getFileType } from "./directory.utils"
 import { renameDir, addDir, removeDir, selectSearchTerm } from "#containers/nav-bar/nav-bar.slice"
-import { addFileContent, addShowedTab, renameTab, saveActiveTabId, selectFileById, selectShowedTabById } from "#containers/edit-pane/edit-pane.slice"
+import { addFileContent, addTab, renameTab, saveActiveTabId, selectFileById, selectShowedTabById } from "#containers/edit-pane/edit-pane.slice"
 import { InitContent } from "#containers/edit-pane/components/editor/editor.config"
 import { ContextMenu } from "../context-menu"
 
@@ -45,14 +45,14 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
     } else {
       if (fileContent) {
         if (!showedTab) {
-          dispatch(addShowedTab({ id: dirData.id, name: dirData.name }))
+          dispatch(addTab({ id: dirData.id, name: dirData.name }))
         }
       } else {
         dispatch(addFileContent({
           id: dirData.id, 
           content: InitContent[dirData.type as keyof typeof InitContent]
         }))
-        dispatch(addShowedTab({ id: dirData.id, name: dirData.name }))
+        dispatch(addTab({ id: dirData.id, name: dirData.name }))
       }
       dispatch(saveActiveTabId(dirData.id))
     }
@@ -99,7 +99,7 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
           id: newDir.id, 
           content: InitContent[fileType as keyof typeof InitContent]
         }))
-        dispatch(addShowedTab({ id: newDir.id, name: newDir.name }))
+        dispatch(addTab({ id: newDir.id, name: newDir.name }))
         dispatch(saveActiveTabId(newDir.id))
       } 
 

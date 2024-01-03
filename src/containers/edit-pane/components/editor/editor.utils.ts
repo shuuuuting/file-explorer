@@ -14,6 +14,16 @@ export const updateTabNameById = (
   return showedTabs
 }
 
+export const pruneTabById = (showedTabs: ITab[], id: string): ITab[] => {
+  const pruneIndex = showedTabs.findIndex(tab => tab.id === id)
+
+  if (pruneIndex !== -1) {
+    showedTabs.splice(pruneIndex, 1)
+  } 
+
+  return showedTabs
+}
+
 export const updateFileContentById = (
   fileContents: IFileContent[],
   id: string,
