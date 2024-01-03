@@ -9,6 +9,25 @@ const enum ButtonAction {
   PASTE = "Paste"
 }
 
+const hasDuplicateName = (children: IDirectory[], dirName: string) => {
+  return children.findIndex(child => child.name === dirName) !== -1
+}
+
+const getCopyName = (dirName: string, dirType: DirType) => {
+  if (dirType === DirType.FOLDER) {
+    return `${dirName} copy`
+  }
+
+  const parts = dirName.split(".")
+  const extension = parts.pop()
+
+  let copyName = `${parts.join(".")} copy`;
+  if (extension) {
+    copyName += `.${extension}`
+  }
+  return copyName
+}
+
 export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
   const dispatch = useAppDispatch()
   const cachedDirData = useAppSelector(selectCachedDirData)
@@ -30,7 +49,13 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
     if (cachedDirData) {
       dispatch(addDir({ 
         parentId: dirData.id, 
-        newDir: { ...cachedDirData, id: new Date().toISOString() } 
+        newDir: { 
+          ...cachedDirData, 
+          id: new Date().toISOString(),
+          name: hasDuplicateName(dirData.children, cachedDirData.name) 
+                  ? getCopyName(cachedDirData.name, cachedDirData.type) 
+                  : cachedDirData.name
+        } 
       }))
       dispatch(saveCachedDir(undefined))
     }

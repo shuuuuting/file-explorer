@@ -1,4 +1,4 @@
-import { IFileContent, ITab } from "#containers/edit-pane/edit-pane.type"
+import { IFileContent, ITab } from "#containers/edit-pane/edit-pane.interface"
 
 export const updateTabNameById = (
   showedTabs: ITab[],

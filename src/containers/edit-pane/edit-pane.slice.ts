@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { IFileContent, ITab } from "./edit-pane.type"
+import { IFileContent, ITab } from "./edit-pane.interface"
 import { RootState } from "#app/store"
 import { updateFileContentById, updateTabNameById } from "./components/editor/editor.utils"
 

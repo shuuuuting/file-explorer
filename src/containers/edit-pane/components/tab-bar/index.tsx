@@ -1,6 +1,6 @@
 import React from "react"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
-import { ITab } from "../../edit-pane.type"
+import { ITab } from "../../edit-pane.interface"
 import { MdClear } from "react-icons/md"
 import { saveActiveTabId, selectActiveTabId, selectShowedTabs } from "#containers/edit-pane/edit-pane.slice"
 

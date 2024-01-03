@@ -1,9 +1,9 @@
-export type ITab = {
+export interface ITab {
   id: string
   name: string
 }
 
-export type IFileContent = {
+export interface IFileContent {
   id: string
   content: string
 }
