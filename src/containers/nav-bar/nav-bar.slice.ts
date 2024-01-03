@@ -6,9 +6,10 @@ import { filterDirs, insertNewDir, pruneDirById, updateDirNameById } from "./com
 
 export interface NavBarState {
   dirData: IDirectory,
-  showedDirData: IDirectory | undefined,
-  cachedDirData: IDirectory | undefined,
-  searchTerm: string
+  showedDirData?: IDirectory,
+  cachedDirData?: IDirectory,
+  searchTerm: string,
+  openedMenuId?: string
 }
 
 const initialState: NavBarState = {
@@ -80,15 +81,19 @@ export const navBarSlice = createSlice({
         state.dirData,
         payload
       )
-    }
+    },
+    saveOpenedMenuId: (state, { payload }) => {
+      state.openedMenuId = payload
+    },
   },
 })
 
-export const { renameDir, addDir, removeDir, saveCachedDir, searchDirs } = navBarSlice.actions
+export const { renameDir, addDir, removeDir, saveCachedDir, searchDirs, saveOpenedMenuId } = navBarSlice.actions
 
 export const selectDirData = (state: RootState) => state.navbar.dirData
 export const selectShowedDirData = (state: RootState) => state.navbar.showedDirData
 export const selectCachedDirData = (state: RootState) => state.navbar.cachedDirData
 export const selectSearchTerm = (state: RootState) => state.navbar.searchTerm
+export const selectOpenedMenuId = (state: RootState) => state.navbar.openedMenuId
 
 export default navBarSlice.reducer

@@ -3,6 +3,8 @@
   flex: 1;
 
   .tabs-container {
+    border: 1px var(--primary-300) solid;
+    border-top: none;
     color: var(--primary-100);
     display: flex;
     font-size: 12px;
@@ -10,8 +12,6 @@
     height: 35px;
 
     .tab-item {
-      border: 1px var(--primary-300) solid;
-      border-top: none;
       display: flex;
       padding: 8px 12px;
 

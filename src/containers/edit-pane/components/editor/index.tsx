@@ -12,7 +12,7 @@ export const Editor: React.FC = () => {
   const savedContent = useAppSelector(state => selectFileById(state, activeTabId!))?.content 
   const fileType = getFileType(showedTab?.name ?? "") as keyof typeof InitContent
   const [currContent, setCurrContent] = useState<string | undefined>(savedContent ?? InitContent[fileType]) 
-  
+
   useEffect(() => {
     if (savedContent !== currContent) {
       setCurrContent(savedContent)
@@ -24,7 +24,7 @@ export const Editor: React.FC = () => {
   }
 
   document.addEventListener("keydown", e => {
-    if (e.ctrlKey && e.key === "s") {
+    if ((e.ctrlKey || e.metaKey) && e.key === "s") {
       e.preventDefault()
       console.log("onSave")
       dispatch(updateFileContent({ id: activeTabId, content: currContent }))
