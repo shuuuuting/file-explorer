@@ -15,18 +15,19 @@ export const updateDirNameById = (
   id: string,
   newName: string
 ): IDirectory => {
-  if (root.id === id) {
-    root.name = newName
-    if (root.type !== DirType.FOLDER) {
-      root.type = getFileType(newName)
+  let newRoot = { ...root }
+  if (newRoot.id === id) {
+    newRoot.name = newName
+    if (newRoot.type !== DirType.FOLDER) {
+      newRoot.type = getFileType(newName)
     }
   } else {
-    root.children.forEach((newRoot: IDirectory) => {
-      updateDirNameById(newRoot, id, newName)
+    newRoot.children.forEach((child: IDirectory) => {
+      updateDirNameById(child, id, newName)
     })
   }
 
-  return root
+  return newRoot
 }
 
 export const insertNewDir = (
@@ -34,37 +35,39 @@ export const insertNewDir = (
   parentId: string,
   newDir: IDirectory
 ): IDirectory => {
-  if (root.id === parentId) {
-    const insertIndex = root.children.findIndex(child =>
+  let newRoot = { ...root }
+  if (newRoot.id === parentId) {
+    const insertIndex = newRoot.children.findIndex(child =>
       newDir.name < child.name
     )
     
     if (insertIndex === -1) {
-      root.children.push(newDir)
+      newRoot.children.push(newDir)
     } else {
-      root.children.splice(insertIndex, 0, newDir)
+      newRoot.children.splice(insertIndex, 0, newDir)
     }
   } else {
-    root.children.forEach((newRoot: IDirectory) => {
-      insertNewDir(newRoot, parentId, newDir)
+    newRoot.children.forEach((child: IDirectory) => {
+      insertNewDir(child, parentId, newDir)
     })
   }
 
-  return root
+  return newRoot
 }
 
 export const pruneDirById = (root: IDirectory, id: string): IDirectory => {
-  const pruneIndex = root.children.findIndex(child => child.id === id)
+  let newRoot = { ...root }
+  const pruneIndex = newRoot.children.findIndex(child => child.id === id)
 
   if (pruneIndex !== -1) {
-    root.children.splice(pruneIndex, 1)
+    newRoot.children.splice(pruneIndex, 1)
   } else {
-    root.children.forEach((newRoot: IDirectory) => {
-      pruneDirById(newRoot, id)
+    newRoot.children.forEach((child: IDirectory) => {
+      pruneDirById(child, id)
     })
   }
 
-  return root
+  return newRoot
 }
 
 export const filterDirs = (root: IDirectory, term: string): IDirectory | undefined => {

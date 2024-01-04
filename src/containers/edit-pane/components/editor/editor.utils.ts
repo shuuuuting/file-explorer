@@ -5,23 +5,25 @@ export const updateTabNameById = (
   id: string,
   newName: string,
 ): ITab[] => {
-  const index = showedTabs.findIndex(tab => tab.id === id)
+  let newShowedTabs = [ ...showedTabs ]
+  const index = newShowedTabs.findIndex(tab => tab.id === id)
 
   if (index !== -1) {
-    showedTabs[index] = { ...showedTabs[index], name: newName } 
+    newShowedTabs[index] = { ...newShowedTabs[index], name: newName } 
   }
 
-  return showedTabs
+  return newShowedTabs
 }
 
 export const pruneTabById = (showedTabs: ITab[], id: string): ITab[] => {
-  const pruneIndex = showedTabs.findIndex(tab => tab.id === id)
+  let newShowedTabs = [ ...showedTabs ]
+  const pruneIndex = newShowedTabs.findIndex(tab => tab.id === id)
 
   if (pruneIndex !== -1) {
-    showedTabs.splice(pruneIndex, 1)
+    newShowedTabs.splice(pruneIndex, 1)
   } 
 
-  return showedTabs
+  return newShowedTabs
 }
 
 export const updateFileContentById = (
@@ -38,8 +40,8 @@ export const updateFileContentById = (
   const tabIndex = showedTabs.findIndex(tab => tab.id === id)
 
   if (contentIndex !== -1) {
-    const newFileConents = [...fileContents]
-    const newShowedTabs = [...showedTabs]
+    const newFileConents = [ ...fileContents ]
+    const newShowedTabs = [ ...showedTabs ]
     const newFileContent = { ...newFileConents[contentIndex], draftContent }
 
     if (isDraft) {
