@@ -5,5 +5,6 @@ export interface IDirectory {
   id: string
   name: string
   type: DirType
+  isExpanded: boolean
   children: IDirectory[]
 }

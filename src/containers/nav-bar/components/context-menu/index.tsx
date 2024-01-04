@@ -2,7 +2,8 @@ import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { addDir, removeDir, saveCachedDir, selectCachedDirData } from "#containers/nav-bar/nav-bar.slice"
 import { DirType } from "../directory/directory.config"
 import { IDirectory } from "../directory/directory.type"
-import { traverseAndModify } from "../directory/directory.utils"
+import { traverseAndModifyAll } from "../directory/directory.utils"
+import { v4 as uuidv4 } from "uuid"
 
 const enum ButtonAction {
   CUT = "Cut",
@@ -45,6 +46,7 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
   const handleCut = () => {
     dispatch(saveCachedDir(dirData))
     dispatch(removeDir(dirData.id))
+    
   }
   
   const handleCopy = () => {
@@ -59,7 +61,7 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
                 ? getCopyName(cachedDirData.name, cachedDirData.type) 
                 : cachedDirData.name
       }
-      newDir = traverseAndModify(newDir, "id", () => new Date().toISOString())
+      newDir = traverseAndModifyAll(newDir, "id", () => uuidv4())
       dispatch(addDir({ parentId: dirData.id, newDir }))
       dispatch(saveCachedDir(undefined))
     }

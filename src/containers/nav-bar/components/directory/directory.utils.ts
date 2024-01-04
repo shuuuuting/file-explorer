@@ -10,17 +10,31 @@ export const getFileType = (fileName: string) => {
   )
 }
 
-export const traverseAndModify = (
+export const traverseAndModifyAll = (
   node: IDirectory, 
   key: string, 
   generateNewData: () => any
 ): IDirectory => {
   const updatedNode = { ...node } 
   updatedNode[key] = generateNewData() 
-  console.log(updatedNode)
+  
+  updatedNode.children = node.children.map(child => 
+    traverseAndModifyAll(child, key, generateNewData))
+
+  return updatedNode
+}
+
+export const traverseAndModifyOne = (
+  node: IDirectory, 
+  id: string,
+  key: string, 
+  newData: any
+): IDirectory => {
+  const updatedNode = { ...node } 
+  if (node.id === id) updatedNode[key] = newData
 
   updatedNode.children = node.children.map(child => 
-    traverseAndModify(child, key, generateNewData))
+    traverseAndModifyOne(child, id, key, newData))
 
   return updatedNode
 }
@@ -30,19 +44,19 @@ export const updateDirNameById = (
   id: string,
   newName: string
 ): IDirectory => {
-  let newRoot = { ...root }
-  if (newRoot.id === id) {
-    newRoot.name = newName
-    if (newRoot.type !== DirType.FOLDER) {
-      newRoot.type = getFileType(newName)
+  if (root.id === id) {
+    root.name = newName
+    if (root.type !== DirType.FOLDER) {
+      root.type = getFileType(newName)
     }
+    return root
   } else {
-    newRoot.children.forEach((child: IDirectory) => {
+    root.children.forEach((child: IDirectory) => {
       updateDirNameById(child, id, newName)
     })
   }
 
-  return newRoot
+  return root
 }
 
 export const insertNewDir = (
@@ -50,39 +64,37 @@ export const insertNewDir = (
   parentId: string,
   newDir: IDirectory
 ): IDirectory => {
-  let newRoot = { ...root }
-  if (newRoot.id === parentId) {
-    const insertIndex = newRoot.children.findIndex(child =>
+  if (root.id === parentId) {
+    const insertIndex = root.children.findIndex(child =>
       newDir.name < child.name
     )
     
     if (insertIndex === -1) {
-      newRoot.children.push(newDir)
+      root.children.push(newDir)
     } else {
-      newRoot.children.splice(insertIndex, 0, newDir)
+      root.children.splice(insertIndex, 0, newDir)
     }
   } else {
-    newRoot.children.forEach((child: IDirectory) => {
+    root.children.forEach((child: IDirectory) => {
       insertNewDir(child, parentId, newDir)
     })
   }
 
-  return newRoot
+  return root
 }
 
 export const pruneDirById = (root: IDirectory, id: string): IDirectory => {
-  let newRoot = { ...root }
-  const pruneIndex = newRoot.children.findIndex(child => child.id === id)
+  const pruneIndex = root.children.findIndex(child => child.id === id)
 
   if (pruneIndex !== -1) {
-    newRoot.children.splice(pruneIndex, 1)
+    root.children.splice(pruneIndex, 1)
   } else {
-    newRoot.children.forEach((child: IDirectory) => {
+    root.children.forEach((child: IDirectory) => {
       pruneDirById(child, id)
     })
   }
 
-  return newRoot
+  return root
 }
 
 export const filterDirs = (root: IDirectory, term: string): IDirectory | undefined => {

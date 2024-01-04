@@ -162,9 +162,18 @@
         text-align: start;
         padding: 4px 24px 4px 4px;
 
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.5;
+        }
+
         &:hover {
           background-color: var(--secondary-300);
           border-radius: 4px;
+        }
+
+        &:disabled:hover {
+          background-color: transparent;
         }
       }
     }

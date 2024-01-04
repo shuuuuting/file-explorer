@@ -10,10 +10,11 @@ import { DirType } from "./directory.config"
 import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { getFileType } from "./directory.utils"
-import { renameDir, addDir, removeDir, selectSearchTerm, selectOpenedMenuId, saveOpenedMenuId } from "#containers/nav-bar/nav-bar.slice"
+import { renameDir, addDir, removeDir, selectSearchTerm, selectOpenedMenuId, saveOpenedMenuId, saveExpandedDir } from "#containers/nav-bar/nav-bar.slice"
 import { addFileContent, addTab, renameTab, saveActiveTabId, selectActiveTabId, selectFileById, selectShowedTabById } from "#containers/edit-pane/edit-pane.slice"
 import { InitContent } from "#containers/edit-pane/components/editor/editor.config"
 import { ContextMenu } from "../context-menu"
+import { v4 as uuidv4 } from "uuid"
 
 export const Directory = ({ dirData }: { dirData: IDirectory }) => {
   const dispatch = useAppDispatch()
@@ -22,34 +23,46 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
   const activeTabId = useAppSelector(selectActiveTabId)
   const showedTab = useAppSelector(state => selectShowedTabById(state, dirData.id))
   const isFolderType = dirData.type === DirType.FOLDER
-  const [isExpanded, setIsExpanded] = useState<boolean>(false)
+  const { isExpanded } = dirData
   const isMenuShow = useAppSelector(selectOpenedMenuId) === dirData.id
   const [isRenaming, setIsRenaming] = useState<boolean>(false)
   const defaultAddState = { isEditing: false, isFolder: false }
   const [addState, setAddState] = useState<{ isEditing: boolean, isFolder: boolean }>(defaultAddState)
 
+  // console.log(dirData)
+
   useEffect(() => {
     if (searchTerm) {
-      setIsExpanded(!dirData.name.includes(searchTerm))
+      dispatch(saveExpandedDir({ 
+        id: dirData.id, 
+        key: "isExpanded", 
+        newData: !dirData.name.includes(searchTerm)
+      }))
     }
   }, [searchTerm])
 
   const handleClick = () => {
-    if (isFolderType) {
-      setIsExpanded(!isExpanded)
-    } else {
-      if (fileContent) {
-        if (!showedTab) {
-          dispatch(addTab({ id: dirData.id, name: dirData.name, isUnsaved: false }))
-        }
-      } else {
-        dispatch(addFileContent({
+    if (!isMenuShow) {
+      if (isFolderType) {
+        dispatch(saveExpandedDir({ 
           id: dirData.id, 
-          draftContent: InitContent[dirData.type as keyof typeof InitContent]
+          key: "isExpanded", 
+          newData: !isExpanded
         }))
-        dispatch(addTab({ id: dirData.id, name: dirData.name, isUnsaved: true }))
+      } else {
+        if (fileContent) {
+          if (!showedTab) {
+            dispatch(addTab({ id: dirData.id, name: dirData.name, isUnsaved: false }))
+          }
+        } else {
+          dispatch(addFileContent({
+            id: dirData.id, 
+            draftContent: InitContent[dirData.type as keyof typeof InitContent]
+          }))
+          dispatch(addTab({ id: dirData.id, name: dirData.name, isUnsaved: true }))
+        }
+        dispatch(saveActiveTabId(dirData.id))
       }
-      dispatch(saveActiveTabId(dirData.id))
     }
   }
 
@@ -81,9 +94,10 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
     if (e.key === "Enter" && e.currentTarget.value) {
       const newDirName = e.currentTarget.value
       let newDir: IDirectory = {
-        id: new Date().toISOString(),
+        id: uuidv4(),
         name: newDirName,
         type: DirType.FOLDER,
+        isExpanded: false,
         children: []
       } 
 
@@ -100,7 +114,13 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
 
       dispatch(addDir({ parentId: dirData.id, newDir }))
       setAddState(defaultAddState)
-      if (!isExpanded) setIsExpanded(true)
+      if (!isExpanded) {
+        dispatch(saveExpandedDir({ 
+          id: dirData.id, 
+          key: "isExpanded", 
+          newData: true
+        }))
+      }
     }
   }
 
