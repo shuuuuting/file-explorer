@@ -10,16 +10,18 @@ import { DirType } from "./directory.config"
 import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { getFileType } from "./directory.utils"
-import { renameDir, addDir, removeDir, selectSearchTerm, selectOpenedMenuId, saveOpenedMenuId, saveExpandedDir } from "#containers/nav-bar/nav-bar.slice"
+import { renameDir, addDir, removeDir, selectSearchTerm, selectOpenedMenuId, saveOpenedMenuId, saveExpandedDir, selectCachedDirInfo } from "#containers/nav-bar/nav-bar.slice"
 import { addFileContent, addTab, renameTab, saveActiveTabId, selectActiveTabId, selectFileById, selectShowedTabById } from "#containers/edit-pane/edit-pane.slice"
 import { InitContent } from "#containers/edit-pane/components/editor/editor.config"
-import { ContextMenu } from "../context-menu"
+import { ButtonAction, ContextMenu } from "../context-menu"
 import { v4 as uuidv4 } from "uuid"
 
 export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined, dirData: IDirectory }) => {
   const dispatch = useAppDispatch()
   const searchTerm = useAppSelector(selectSearchTerm)
   const fileContent = useAppSelector(state => selectFileById(state, dirData.id)) 
+  const cachedDirInfo = useAppSelector(selectCachedDirInfo)
+  const isCutting = cachedDirInfo?.action === ButtonAction.CUT && cachedDirInfo.dirData.id === dirData.id
   const activeTabId = useAppSelector(selectActiveTabId)
   const showedTab = useAppSelector(state => selectShowedTabById(state, dirData.id))
   const isFolderType = dirData.type === DirType.FOLDER
@@ -142,14 +144,18 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
   return (
     <>
       <div 
-        className={`navbar-item${activeTabId === dirData.id ? " selected" : ""}${isMenuShow ? " rightClicked" : ""}`} 
+        className={"navbar-item"
+          + `${activeTabId === dirData.id ? " selected" : ""}`
+          + `${isMenuShow ? " rightClicked" : ""}`
+          + `${isCutting ? " isCutting" : ""}`
+        } 
         onClick={handleClick}
         onContextMenu={handleRightClick}
       >
         {isMenuShow && 
           <div 
             className="context-menu-container"
-            style={{ display: isMenuShow ? "flex" : "none" }}
+            style={{ visibility: isMenuShow ? "visible" : "hidden" }}
           > 
             <ContextMenu dirData={dirData}/>
           </div>
@@ -182,7 +188,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
               {dirData.name}
             </span>
         }
-        {isRenaming || 
+        {isRenaming || isCutting || 
           <span className="navbar-item-action">
             <span 
               className="navbar-item-button"

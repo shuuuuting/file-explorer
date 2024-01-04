@@ -1,11 +1,11 @@
 import { useAppDispatch, useAppSelector } from "#app/hooks"
-import { addDir, removeDir, saveCachedDir, selectCachedDirData } from "#containers/nav-bar/nav-bar.slice"
+import { addDir, removeDir, saveCachedInfo, selectCachedDirInfo } from "#containers/nav-bar/nav-bar.slice"
 import { DirType } from "../directory/directory.config"
 import { IDirectory } from "../directory/directory.type"
 import { traverseAndModifyAll } from "../directory/directory.utils"
 import { v4 as uuidv4 } from "uuid"
 
-const enum ButtonAction {
+export const enum ButtonAction {
   CUT = "Cut",
   COPY = "Copy",
   PASTE = "Paste"
@@ -37,33 +37,41 @@ const getCopyName = (dirName: string, dirType: DirType) => {
 
 export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
   const dispatch = useAppDispatch()
-  const cachedDirData = useAppSelector(selectCachedDirData)
+  const cachedDirInfo = useAppSelector(selectCachedDirInfo)
   const disabled = (action: ButtonAction) => (
     (dirData.id === "0" && [ButtonAction.CUT, ButtonAction.COPY].includes(action))
-    || ((!cachedDirData || dirData.type !== DirType.FOLDER) && action === ButtonAction.PASTE)
+    || ((!cachedDirInfo || dirData.type !== DirType.FOLDER) && action === ButtonAction.PASTE)
   )
 
   const handleCut = () => {
-    dispatch(saveCachedDir(dirData))
-    dispatch(removeDir(dirData.id))
-    
+    dispatch(saveCachedInfo({ action: ButtonAction.CUT, dirData }))
   }
   
   const handleCopy = () => {
-    dispatch(saveCachedDir(dirData))
+    dispatch(saveCachedInfo({ action: ButtonAction.COPY, dirData }))
   }
 
   const handlePaste = () => {
-    if (cachedDirData) {
-      let newDir = { 
-        ...cachedDirData, 
-        name: hasDuplicateName(dirData.children, cachedDirData.name) 
-                ? getCopyName(cachedDirData.name, cachedDirData.type) 
-                : cachedDirData.name
+    if (cachedDirInfo) {
+      const cachedDirData = cachedDirInfo.dirData
+      if (cachedDirInfo.action === ButtonAction.CUT) {
+        if (hasDuplicateName(dirData.children, cachedDirData.name)) {
+          // dispatch warning
+        } else {
+          dispatch(removeDir(dirData.id))
+          dispatch(addDir({ parentId: dirData.id, cachedDirData }))
+        }
+      } else {
+        let newDir = { 
+          ...cachedDirData, 
+          name: hasDuplicateName(dirData.children, cachedDirData.name) 
+                  ? getCopyName(cachedDirData.name, cachedDirData.type) 
+                  : cachedDirData.name
+        }
+        newDir = traverseAndModifyAll(newDir, "id", () => uuidv4())
+        dispatch(addDir({ parentId: dirData.id, newDir }))
       }
-      newDir = traverseAndModifyAll(newDir, "id", () => uuidv4())
-      dispatch(addDir({ parentId: dirData.id, newDir }))
-      dispatch(saveCachedDir(undefined))
+      dispatch(saveCachedInfo(undefined))
     }
   }
 

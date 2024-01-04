@@ -3,11 +3,12 @@ import { RootState } from "#app/store"
 import { IDirectory } from "./components/directory/directory.type"
 import { DirType } from "./components/directory/directory.config"
 import { filterDirs, insertNewDir, pruneDirById, traverseAndModifyOne, updateDirNameById } from "./components/directory/directory.utils"
+import { ButtonAction } from "./components/context-menu"
 
 export interface NavBarState {
   dirData: IDirectory,
   showedDirData?: IDirectory,
-  cachedDirData?: IDirectory,
+  cachedDirInfo?: { action: ButtonAction, dirData: IDirectory },
   searchTerm: string,
   openedMenuId?: string
 }
@@ -48,7 +49,7 @@ const initialState: NavBarState = {
     ]
   },
   showedDirData: undefined,
-  cachedDirData: undefined,
+  cachedDirInfo: undefined,
   searchTerm: ""
 }
 
@@ -77,8 +78,8 @@ export const navBarSlice = createSlice({
         payload
       )
     },
-    saveCachedDir: (state, { payload }) => {
-      state.cachedDirData = payload
+    saveCachedInfo: (state, { payload }) => {
+      state.cachedDirInfo = payload
     },
     searchDirs: (state, { payload }) => {
       state.searchTerm = payload
@@ -96,11 +97,11 @@ export const navBarSlice = createSlice({
   },
 })
 
-export const { renameDir, addDir, removeDir, saveCachedDir, searchDirs, saveOpenedMenuId, saveExpandedDir } = navBarSlice.actions
+export const { renameDir, addDir, removeDir, saveCachedInfo, searchDirs, saveOpenedMenuId, saveExpandedDir } = navBarSlice.actions
 
 export const selectDirData = (state: RootState) => state.navbar.dirData
 export const selectShowedDirData = (state: RootState) => state.navbar.showedDirData
-export const selectCachedDirData = (state: RootState) => state.navbar.cachedDirData
+export const selectCachedDirInfo = (state: RootState) => state.navbar.cachedDirInfo
 export const selectSearchTerm = (state: RootState) => state.navbar.searchTerm
 export const selectOpenedMenuId = (state: RootState) => state.navbar.openedMenuId
 
