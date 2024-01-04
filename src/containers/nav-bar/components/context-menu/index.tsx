@@ -26,7 +26,7 @@ const getCopyName = (dirName: string, dirType: DirType) => {
   const parts = dirName.split(".")
   const extension = parts.pop()
 
-  let copyName = `${parts.join(".")} copy`;
+  let copyName = `${parts.join(".")} copy`
   if (extension) {
     copyName += `.${extension}`
   }

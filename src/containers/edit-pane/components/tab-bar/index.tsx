@@ -1,10 +1,11 @@
 import React from "react"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { ITab } from "../../edit-pane.interface"
+import { MdCircle } from "react-icons/md"
 import { MdClear } from "react-icons/md"
 import { removeTab, saveActiveTabId, selectActiveTabId, selectShowedTabs } from "#containers/edit-pane/edit-pane.slice"
 
-export const Tab: React.FC = () => {
+export const TabBar: React.FC = () => {
   const dispatch = useAppDispatch()
   const activeTabId = useAppSelector(selectActiveTabId)
   const showedTabs = useAppSelector(selectShowedTabs)
@@ -27,6 +28,9 @@ export const Tab: React.FC = () => {
           onClick={() => handleClick(tab.id)}
         >
           {tab.name}
+          {tab.isUnsaved && 
+            <span className="tab-item-icon"><MdCircle /></span>
+          }
           <span 
             className="tab-item-button"
             onClick={(e) => handleRemove(e, tab.id)}

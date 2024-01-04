@@ -1,42 +1,39 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { Editor as MonacoEditor } from "@monaco-editor/react"
 import { InitContent, LanguageMap } from "./editor.config"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
-import { selectActiveTabId, selectFileById, selectShowedTabById, updateFileContent } from "#containers/edit-pane/edit-pane.slice"
+import { cacheDraftContent, selectFileById, selectShowedTabById, updateFileContent } from "#containers/edit-pane/edit-pane.slice"
 import { getFileType } from "#containers/nav-bar/components/directory/directory.utils"
 
-export const Editor: React.FC = () => {
+export const Editor = ({ tabId }: { tabId: string }) => {
   const dispatch = useAppDispatch()
-  const activeTabId = useAppSelector(selectActiveTabId)
-  const showedTab = useAppSelector(state => selectShowedTabById(state, activeTabId!))
-  const savedContent = useAppSelector(state => selectFileById(state, activeTabId!))?.content 
+  const showedTab = useAppSelector(state => selectShowedTabById(state, tabId))
+  const draftContent = useAppSelector(state => selectFileById(state, tabId))?.draftContent 
   const fileType = getFileType(showedTab?.name ?? "") as keyof typeof InitContent
-  const [currContent, setCurrContent] = useState<string | undefined>(savedContent ?? InitContent[fileType]) 
 
   useEffect(() => {
-    if (savedContent !== currContent) {
-      setCurrContent(savedContent)
-    } 
-  }, [savedContent])
+    const handleSaveEvent = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault()
+        dispatch(updateFileContent({ id: tabId }))
+      }
+    }
+    document.addEventListener("keydown", handleSaveEvent)
+    return () => document.removeEventListener("keydown", handleSaveEvent)
+  }, [tabId])
 
   const handleChange = (value: string | undefined) => {
-    setCurrContent(value)
-  }
-
-  document.addEventListener("keydown", e => {
-    if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-      e.preventDefault()
-      console.log("onSave")
-      dispatch(updateFileContent({ id: activeTabId, content: currContent }))
+    if (draftContent !== value) {
+      dispatch(cacheDraftContent( { id: tabId, content: value }))
     }
-  })
+  }
 
   return (
     <div className="editpane-editor"> 
       <MonacoEditor
         theme="vs-dark"
         language={LanguageMap[fileType]}
-        value={currContent}
+        value={draftContent}
         onChange={handleChange}
       />
     </div>

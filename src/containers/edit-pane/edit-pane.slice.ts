@@ -44,17 +44,32 @@ export const editPaneSlice = createSlice({
     addFileContent: (state, { payload }) => {
       state.fileContents = [...state.fileContents, payload]
     },
-    updateFileContent: (state, { payload }) => {
-      state.fileContents = updateFileContentById(
+    cacheDraftContent: (state, { payload }) => {
+      const { newFileConents, newShowedTabs } = updateFileContentById(
         state.fileContents,
+        state.showedTabs,
         payload.id,
+        true,
         payload.content
       )
+      state.fileContents = newFileConents
+      state.showedTabs = newShowedTabs
+    },
+    updateFileContent: (state, { payload }) => {
+      const { newFileConents, newShowedTabs } = updateFileContentById(
+        state.fileContents,
+        state.showedTabs,
+        payload.id,
+        false,
+        ""
+      )
+      state.fileContents = newFileConents
+      state.showedTabs = newShowedTabs
     }
   },
 })
 
-export const { saveActiveTabId, addTab, renameTab, removeTab, addFileContent, updateFileContent } = editPaneSlice.actions
+export const { saveActiveTabId, addTab, renameTab, removeTab, addFileContent, cacheDraftContent, updateFileContent } = editPaneSlice.actions
 
 export const selectActiveTabId = (state: RootState) => state.editpane.activeTabId
 export const selectShowedTabs = (state: RootState) => state.editpane.showedTabs

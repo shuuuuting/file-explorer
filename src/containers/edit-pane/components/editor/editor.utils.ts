@@ -26,14 +26,32 @@ export const pruneTabById = (showedTabs: ITab[], id: string): ITab[] => {
 
 export const updateFileContentById = (
   fileContents: IFileContent[],
+  showedTabs: ITab[],
   id: string,
-  newContent: string,
-): IFileContent[] => {
-  const index = fileContents.findIndex(fileContent => fileContent.id === id)
+  isDraft: boolean,
+  draftContent: string
+): {
+  newFileConents: IFileContent[],
+  newShowedTabs: ITab[]
+} => {
+  const contentIndex = fileContents.findIndex(fileContent => fileContent.id === id)
+  const tabIndex = showedTabs.findIndex(tab => tab.id === id)
 
-  if (index !== -1) {
-    fileContents[index] = { ...fileContents[index], content: newContent } 
+  if (contentIndex !== -1) {
+    const newFileConents = [...fileContents]
+    const newShowedTabs = [...showedTabs]
+    const newFileContent = { ...newFileConents[contentIndex], draftContent }
+
+    if (isDraft) {
+      newFileConents[contentIndex] = newFileContent
+      newShowedTabs[tabIndex].isUnsaved = newFileContent.content !== draftContent
+    } else if (newFileContent.content !== newFileContent.draftContent) {
+        newFileConents[contentIndex] = { ...newFileContent, content: newFileContent.draftContent } 
+        newShowedTabs[tabIndex] = { ...newShowedTabs[tabIndex], isUnsaved: false }
+    }
+
+    return { newFileConents, newShowedTabs }
   }
 
-  return fileContents
+  return { newFileConents: fileContents, newShowedTabs: showedTabs }
 }

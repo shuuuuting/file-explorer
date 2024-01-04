@@ -1,9 +1,11 @@
 export interface ITab {
   id: string
   name: string
+  isUnsaved: boolean
 }
 
 export interface IFileContent {
   id: string
-  content: string
+  draftContent: string
+  content?: string
 }

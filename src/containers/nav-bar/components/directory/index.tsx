@@ -40,14 +40,14 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
     } else {
       if (fileContent) {
         if (!showedTab) {
-          dispatch(addTab({ id: dirData.id, name: dirData.name }))
+          dispatch(addTab({ id: dirData.id, name: dirData.name, isUnsaved: false }))
         }
       } else {
         dispatch(addFileContent({
           id: dirData.id, 
-          content: InitContent[dirData.type as keyof typeof InitContent]
+          draftContent: InitContent[dirData.type as keyof typeof InitContent]
         }))
-        dispatch(addTab({ id: dirData.id, name: dirData.name }))
+        dispatch(addTab({ id: dirData.id, name: dirData.name, isUnsaved: true }))
       }
       dispatch(saveActiveTabId(dirData.id))
     }
@@ -92,9 +92,9 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
         newDir = { ...newDir, type: fileType }
         dispatch(addFileContent({
           id: newDir.id, 
-          content: InitContent[fileType as keyof typeof InitContent]
+          draftContent: InitContent[fileType as keyof typeof InitContent]
         }))
-        dispatch(addTab({ id: newDir.id, name: newDir.name }))
+        dispatch(addTab({ id: newDir.id, name: newDir.name, isUnsaved: true }))
         dispatch(saveActiveTabId(newDir.id))
       } 
 

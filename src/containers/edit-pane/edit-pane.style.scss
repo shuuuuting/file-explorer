@@ -31,10 +31,26 @@
         }
       }
 
-      .tab-item-button {
+      .tab-item-icon {
         align-items: center;
         display: flex;
         margin-left: 3px;
+        margin-right: -3px;
+      }
+
+      .tab-item-button {
+        aspect-ratio: 1 / 1;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        margin-left: 3px;
+        margin-right: -3px;
+
+        &:hover {
+          background-color: var(--primary-200);
+          border-radius: 50%;
+          transition-duration: 0.1s;
+        }
       }
     }
   }
