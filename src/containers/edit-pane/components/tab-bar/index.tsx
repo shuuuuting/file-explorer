@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { ITab } from "../../edit-pane.interface"
 import { MdCircle } from "react-icons/md"
@@ -9,6 +9,10 @@ export const TabBar: React.FC = () => {
   const dispatch = useAppDispatch()
   const activeTabId = useAppSelector(selectActiveTabId)
   const showedTabs = useAppSelector(selectShowedTabs)
+
+  useEffect(() => {
+    if (activeTabId) document.getElementById(`tab-${activeTabId}`)?.scrollIntoView()
+  }, [activeTabId])
 
   const handleClick = (id: string) => {
     dispatch(saveActiveTabId(id))
@@ -23,6 +27,7 @@ export const TabBar: React.FC = () => {
     <div className="tabs-container">
       {showedTabs.map((tab: ITab) => (
         <div 
+          id={`tab-${tab.id}`}
           key={tab.id}
           className={`tab-item${tab.id === activeTabId ? " active-tab": ""}`}
           onClick={() => handleClick(tab.id)}
