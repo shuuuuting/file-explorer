@@ -45,12 +45,12 @@ export const editPaneSlice = createSlice({
       state.fileContents = [...state.fileContents, payload]
     },
     removeFileContent: (state, { payload }) => {
-      const { newFileConents, newShowedTabs } = pruneFileContentById(
+      const { newFileContents, newShowedTabs } = pruneFileContentById(
         state.fileContents,
         state.showedTabs,
         payload
       )
-      state.fileContents = newFileConents
+      state.fileContents = newFileContents
       state.showedTabs = newShowedTabs
       if (newShowedTabs.length === 0) {
         state.activeTabId = undefined
@@ -59,25 +59,25 @@ export const editPaneSlice = createSlice({
       }
     },
     cacheDraftContent: (state, { payload }) => {
-      const { newFileConents, newShowedTabs } = updateFileContentById(
+      const { newFileContents, newShowedTabs } = updateFileContentById(
         state.fileContents,
         state.showedTabs,
         payload.id,
         true,
         payload.content
       )
-      state.fileContents = newFileConents
+      state.fileContents = newFileContents
       state.showedTabs = newShowedTabs
     },
     updateFileContent: (state, { payload }) => {
-      const { newFileConents, newShowedTabs } = updateFileContentById(
+      const { newFileContents, newShowedTabs } = updateFileContentById(
         state.fileContents,
         state.showedTabs,
         payload.id,
         false,
         ""
       )
-      state.fileContents = newFileConents
+      state.fileContents = newFileContents
       state.showedTabs = newShowedTabs
     }
   },

@@ -31,19 +31,19 @@ export const pruneFileContentById = (
   showedTabs: ITab[],
   id: string,
 ): {
-  newFileConents: IFileContent[],
+  newFileContents: IFileContent[],
   newShowedTabs: ITab[]
 } => {
-  let newFileConents = [ ...fileContents ]
-  const pruneIndex = newFileConents.findIndex(fileContent => fileContent.id === id)
+  let newFileContents = [ ...fileContents ]
+  const pruneIndex = newFileContents.findIndex(fileContent => fileContent.id === id)
 
   if (pruneIndex !== -1) {
-    newFileConents.splice(pruneIndex, 1)
+    newFileContents.splice(pruneIndex, 1)
   } 
 
   const newShowedTabs = pruneTabById(showedTabs, id)
 
-  return { newFileConents, newShowedTabs }
+  return { newFileContents, newShowedTabs }
 }
 
 export const updateFileContentById = (
@@ -53,27 +53,28 @@ export const updateFileContentById = (
   isDraft: boolean,
   draftContent: string
 ): {
-  newFileConents: IFileContent[],
+  newFileContents: IFileContent[],
   newShowedTabs: ITab[]
 } => {
   const contentIndex = fileContents.findIndex(fileContent => fileContent.id === id)
   const tabIndex = showedTabs.findIndex(tab => tab.id === id)
 
   if (contentIndex !== -1) {
-    const newFileConents = [ ...fileContents ]
+    const newFileContents = [ ...fileContents ]
     const newShowedTabs = [ ...showedTabs ]
-    const newFileContent = { ...newFileConents[contentIndex], draftContent }
+    let newFileContent = { ...newFileContents[contentIndex] }
 
     if (isDraft) {
-      newFileConents[contentIndex] = newFileContent
+      newFileContent = { ...newFileContent, draftContent }
+      newFileContents[contentIndex] = newFileContent
       newShowedTabs[tabIndex].isUnsaved = newFileContent.content !== draftContent
     } else if (newFileContent.content !== newFileContent.draftContent) {
-        newFileConents[contentIndex] = { ...newFileContent, content: newFileContent.draftContent } 
-        newShowedTabs[tabIndex] = { ...newShowedTabs[tabIndex], isUnsaved: false }
+      newFileContents[contentIndex] = { ...newFileContent, content: newFileContent.draftContent } 
+      newShowedTabs[tabIndex] = { ...newShowedTabs[tabIndex], isUnsaved: false }
     }
 
-    return { newFileConents, newShowedTabs }
+    return { newFileContents, newShowedTabs }
   }
 
-  return { newFileConents: fileContents, newShowedTabs: showedTabs }
+  return { newFileContents: fileContents, newShowedTabs: showedTabs }
 }
