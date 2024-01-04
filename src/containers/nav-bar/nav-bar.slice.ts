@@ -62,7 +62,6 @@ export const navBarSlice = createSlice({
         payload.id,
         payload.newName
       )
-      console.log(new1)
       state.dirData = new1
     },
     addDir: (state, { payload }) => {

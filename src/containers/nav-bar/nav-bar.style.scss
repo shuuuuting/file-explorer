@@ -178,4 +178,13 @@
       }
     }
   }
+
+  .invalid-warning {
+    background-color: var(--warning);
+    color: var(--primary-100);
+    position: absolute;
+    z-index: 100;
+    top: 56px;
+    left: 20px;
+  }
 }

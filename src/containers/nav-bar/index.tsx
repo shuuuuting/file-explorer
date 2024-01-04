@@ -25,9 +25,9 @@ export const NavBar: React.FC = () => {
       {/* folders tree */}
       {searchTerm 
         ? showedDirData 
-          ? <Directory dirData={showedDirData} />
+          ? <Directory parent={undefined} dirData={showedDirData} />
           : <div className="navbar-hint"> No results found. </div>
-        : <Directory dirData={dirData} />
+        : <Directory parent={undefined} dirData={dirData} />
       }
     </div>
   )

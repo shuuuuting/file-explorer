@@ -16,7 +16,7 @@ import { InitContent } from "#containers/edit-pane/components/editor/editor.conf
 import { ContextMenu } from "../context-menu"
 import { v4 as uuidv4 } from "uuid"
 
-export const Directory = ({ dirData }: { dirData: IDirectory }) => {
+export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined, dirData: IDirectory }) => {
   const dispatch = useAppDispatch()
   const searchTerm = useAppSelector(selectSearchTerm)
   const fileContent = useAppSelector(state => selectFileById(state, dirData.id)) 
@@ -26,11 +26,10 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
   const { isExpanded } = dirData
   const isMenuShow = useAppSelector(selectOpenedMenuId) === dirData.id
   const [isRenaming, setIsRenaming] = useState<boolean>(false)
+  const [isNameInvalid, setIsNameInvalid] = useState(false)
   const defaultAddState = { isEditing: false, isFolder: false }
   const [addState, setAddState] = useState<{ isEditing: boolean, isFolder: boolean }>(defaultAddState)
-
-  // console.log(dirData)
-
+  
   useEffect(() => {
     if (searchTerm) {
       dispatch(saveExpandedDir({ 
@@ -77,11 +76,17 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
   }
 
   const handleRenameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && e.currentTarget.value) {
-      const renameInfo = { id: dirData.id, newName: e.currentTarget.value }
-      dispatch(renameDir(renameInfo))
-      if (!isFolderType) dispatch(renameTab(renameInfo))
-      setIsRenaming(false)
+    const newName = e.currentTarget.value
+    if (e.key === "Enter" && newName) {
+      if (parent && parent.children.map(child => child.name).includes(newName)) {
+        setIsNameInvalid(true)
+      } else {
+        setIsNameInvalid(false)
+        const renameInfo = { id: dirData.id, newName: e.currentTarget.value }
+        dispatch(renameDir(renameInfo))
+        if (!isFolderType) dispatch(renameTab(renameInfo))
+        setIsRenaming(false)
+      }
     }
   }
 
@@ -91,35 +96,40 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
   }
 
   const handleAddKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, isFolder: boolean) => {
+    const newName = e.currentTarget.value
     if (e.key === "Enter" && e.currentTarget.value) {
-      const newDirName = e.currentTarget.value
-      let newDir: IDirectory = {
-        id: uuidv4(),
-        name: newDirName,
-        type: DirType.FOLDER,
-        isExpanded: false,
-        children: []
-      } 
+      if (dirData.children.map(child => child.name).includes(newName)) {
+        setIsNameInvalid(true)
+      } else {
+        setIsNameInvalid(false)
+        let newDir: IDirectory = {
+          id: uuidv4(),
+          name: newName,
+          type: DirType.FOLDER,
+          isExpanded: false,
+          children: []
+        } 
 
-      if (!isFolder) {
-        const fileType = getFileType(newDirName)
-        newDir = { ...newDir, type: fileType }
-        dispatch(addFileContent({
-          id: newDir.id, 
-          draftContent: InitContent[fileType as keyof typeof InitContent]
-        }))
-        dispatch(addTab({ id: newDir.id, name: newDir.name, isUnsaved: true }))
-        dispatch(saveActiveTabId(newDir.id))
-      } 
+        if (!isFolder) {
+          const fileType = getFileType(newName)
+          newDir = { ...newDir, type: fileType }
+          dispatch(addFileContent({
+            id: newDir.id, 
+            draftContent: InitContent[fileType as keyof typeof InitContent]
+          }))
+          dispatch(addTab({ id: newDir.id, name: newDir.name, isUnsaved: true }))
+          dispatch(saveActiveTabId(newDir.id))
+        } 
 
-      dispatch(addDir({ parentId: dirData.id, newDir }))
-      setAddState(defaultAddState)
-      if (!isExpanded) {
-        dispatch(saveExpandedDir({ 
-          id: dirData.id, 
-          key: "isExpanded", 
-          newData: true
-        }))
+        dispatch(addDir({ parentId: dirData.id, newDir }))
+        setAddState(defaultAddState)
+        if (!isExpanded) {
+          dispatch(saveExpandedDir({ 
+            id: dirData.id, 
+            key: "isExpanded", 
+            newData: true
+          }))
+        }
       }
     }
   }
@@ -144,6 +154,14 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
             <ContextMenu dirData={dirData}/>
           </div>
         }
+        {isNameInvalid && 
+          <span 
+            className="invalid-warning"
+            style={{ display: isNameInvalid ? "flex" : "none" }}
+          >
+            The name already exists at this location! 
+          </span> 
+        }
         <span className="navbar-item-icon">
           {isFolderType
             ? isExpanded ? <RiFolderOpenFill /> : <MdFolder />
@@ -156,7 +174,7 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
               className="navbar-input-text" 
               defaultValue={dirData.name}
               type="text"
-              onBlur={() => setIsRenaming(false)}
+              onBlur={() => {setIsRenaming(false); setIsNameInvalid(false)}}
               onClick={(e) => e.stopPropagation()}
               onKeyDown={handleRenameKeyDown}
             />
@@ -209,14 +227,14 @@ export const Directory = ({ dirData }: { dirData: IDirectory }) => {
               autoFocus
               className="navbar-input-text" 
               type="text"
-              onBlur={() => setAddState(defaultAddState)}
+              onBlur={() => {setAddState(defaultAddState); setIsNameInvalid(false)}}
               onKeyDown={(e) => handleAddKeyDown(e, addState.isFolder)}
             />
           </div>
         }
         {isExpanded &&
           dirData.children.map((child: IDirectory) => (
-            <Directory dirData={child} key={child.id} />
+            <Directory parent={dirData} dirData={child} key={child.id} />
           ))
         }
       </div>
