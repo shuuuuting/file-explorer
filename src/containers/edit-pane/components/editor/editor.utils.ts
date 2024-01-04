@@ -26,6 +26,26 @@ export const pruneTabById = (showedTabs: ITab[], id: string): ITab[] => {
   return newShowedTabs
 }
 
+export const pruneFileContentById = (
+  fileContents: IFileContent[],
+  showedTabs: ITab[],
+  id: string,
+): {
+  newFileConents: IFileContent[],
+  newShowedTabs: ITab[]
+} => {
+  let newFileConents = [ ...fileContents ]
+  const pruneIndex = newFileConents.findIndex(fileContent => fileContent.id === id)
+
+  if (pruneIndex !== -1) {
+    newFileConents.splice(pruneIndex, 1)
+  } 
+
+  const newShowedTabs = pruneTabById(showedTabs, id)
+
+  return { newFileConents, newShowedTabs }
+}
+
 export const updateFileContentById = (
   fileContents: IFileContent[],
   showedTabs: ITab[],

@@ -1,4 +1,5 @@
 import { useAppDispatch, useAppSelector } from "#app/hooks"
+import { removeFileContent } from "#containers/edit-pane/edit-pane.slice"
 import { addDir, removeDir, saveCachedInfo, selectCachedDirInfo } from "#containers/nav-bar/nav-bar.slice"
 import { DirType } from "../directory/directory.config"
 import { IDirectory } from "../directory/directory.type"
@@ -59,6 +60,7 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
           // dispatch warning
         } else {
           dispatch(removeDir(dirData.id))
+          dispatch(removeFileContent(dirData.id))
           dispatch(addDir({ parentId: dirData.id, cachedDirData }))
         }
       } else {

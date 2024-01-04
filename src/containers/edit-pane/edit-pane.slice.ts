@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { IFileContent, ITab } from "./edit-pane.interface"
 import { RootState } from "#app/store"
-import { pruneTabById, updateFileContentById, updateTabNameById } from "./components/editor/editor.utils"
+import { pruneFileContentById, pruneTabById, updateFileContentById, updateTabNameById } from "./components/editor/editor.utils"
 
 export interface EditPaneState {
   activeTabId?: string,
@@ -37,12 +37,26 @@ export const editPaneSlice = createSlice({
       state.showedTabs = prunedTabs 
       if (prunedTabs.length === 0) {
         state.activeTabId = undefined
-      } else if (state.activeTabId === payload.id) {
+      } else if (state.activeTabId === payload) {
         state.activeTabId = prunedTabs[0].id
       }
     },
     addFileContent: (state, { payload }) => {
       state.fileContents = [...state.fileContents, payload]
+    },
+    removeFileContent: (state, { payload }) => {
+      const { newFileConents, newShowedTabs } = pruneFileContentById(
+        state.fileContents,
+        state.showedTabs,
+        payload
+      )
+      state.fileContents = newFileConents
+      state.showedTabs = newShowedTabs
+      if (newShowedTabs.length === 0) {
+        state.activeTabId = undefined
+      } else if (state.activeTabId === payload) {
+        state.activeTabId = newShowedTabs[0].id
+      }
     },
     cacheDraftContent: (state, { payload }) => {
       const { newFileConents, newShowedTabs } = updateFileContentById(
@@ -69,7 +83,7 @@ export const editPaneSlice = createSlice({
   },
 })
 
-export const { saveActiveTabId, addTab, renameTab, removeTab, addFileContent, cacheDraftContent, updateFileContent } = editPaneSlice.actions
+export const { saveActiveTabId, addTab, renameTab, removeTab, addFileContent, removeFileContent, cacheDraftContent, updateFileContent } = editPaneSlice.actions
 
 export const selectActiveTabId = (state: RootState) => state.editpane.activeTabId
 export const selectShowedTabs = (state: RootState) => state.editpane.showedTabs
