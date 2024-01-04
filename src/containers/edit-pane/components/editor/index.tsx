@@ -4,6 +4,7 @@ import { InitContent, LanguageMap } from "./editor.config"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { cacheDraftContent, selectFileById, selectShowedTabById, updateFileContent } from "#containers/edit-pane/edit-pane.slice"
 import { getFileType } from "#containers/nav-bar/components/directory/directory.utils"
+import { debounce } from "#utils/debounce"
 
 export const Editor = ({ tabId }: { tabId: string }) => {
   const dispatch = useAppDispatch()
@@ -22,11 +23,11 @@ export const Editor = ({ tabId }: { tabId: string }) => {
     return () => document.removeEventListener("keydown", handleSaveEvent)
   }, [tabId])
 
-  const handleChange = (value: string | undefined) => {
+  const handleChange = debounce((value: string | undefined) => {
     if (draftContent !== value) {
       dispatch(cacheDraftContent( { id: tabId, content: value }))
     }
-  }
+  }, 300)
 
   return (
     <div className="editpane-editor"> 
