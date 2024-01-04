@@ -10,6 +10,21 @@ export const getFileType = (fileName: string) => {
   )
 }
 
+export const traverseAndModify = (
+  node: IDirectory, 
+  key: string, 
+  generateNewData: () => any
+): IDirectory => {
+  const updatedNode = { ...node } 
+  updatedNode[key] = generateNewData() 
+  console.log(updatedNode)
+
+  updatedNode.children = node.children.map(child => 
+    traverseAndModify(child, key, generateNewData))
+
+  return updatedNode
+}
+
 export const updateDirNameById = (
   root: IDirectory,
   id: string,

@@ -2,6 +2,7 @@ import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { addDir, removeDir, saveCachedDir, selectCachedDirData } from "#containers/nav-bar/nav-bar.slice"
 import { DirType } from "../directory/directory.config"
 import { IDirectory } from "../directory/directory.type"
+import { traverseAndModify } from "../directory/directory.utils"
 
 const enum ButtonAction {
   CUT = "Cut",
@@ -52,16 +53,14 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
 
   const handlePaste = () => {
     if (cachedDirData) {
-      dispatch(addDir({ 
-        parentId: dirData.id, 
-        newDir: { 
-          ...cachedDirData, 
-          id: new Date().toISOString(),
-          name: hasDuplicateName(dirData.children, cachedDirData.name) 
-                  ? getCopyName(cachedDirData.name, cachedDirData.type) 
-                  : cachedDirData.name
-        } 
-      }))
+      let newDir = { 
+        ...cachedDirData, 
+        name: hasDuplicateName(dirData.children, cachedDirData.name) 
+                ? getCopyName(cachedDirData.name, cachedDirData.type) 
+                : cachedDirData.name
+      }
+      newDir = traverseAndModify(newDir, "id", () => new Date().toISOString())
+      dispatch(addDir({ parentId: dirData.id, newDir }))
       dispatch(saveCachedDir(undefined))
     }
   }
@@ -79,7 +78,6 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
       action: ButtonAction.PASTE, 
       onClick: handlePaste
     },
-
   ]
 
   return (
