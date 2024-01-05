@@ -21,40 +21,7 @@ const initialState: NavBarState = {
     type: DirType.FOLDER,
     isExpanded: true,
     isVisible: true,
-    children: [
-      {
-        id: "1",
-        name: "happy",
-        path: "root/happy",
-        type: DirType.FOLDER,
-        isExpanded: false,
-        isVisible: true,
-        children: [
-          {
-            id: "11",
-            name: "happy11.ts",
-            path: "root/happy/happy11.ts",
-            type: DirType.TS,
-            isExpanded: false,
-            isVisible: true,
-            children: [
-              
-            ]
-          }
-        ]
-      },
-      {
-        id: "2",
-        name: "sappy",
-        path: "root/sappy",
-        type: DirType.OTHERS,
-        isExpanded: false,
-        isVisible: true,
-        children: [
-          
-        ]
-      }
-    ]
+    children: []
   },
   searchTerm: "",
   warningMsg: ""
