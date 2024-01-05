@@ -18,18 +18,21 @@ const initialState: NavBarState = {
   dirData: {
     id: "0",
     name: "root",
+    path: "root",
     type: DirType.FOLDER,
     isExpanded: true,
     children: [
       {
         id: "1",
         name: "happy",
+        path: "root/happy",
         type: DirType.FOLDER,
         isExpanded: false,
         children: [
           {
             id: "11",
             name: "happy11.ts",
+            path: "root/happy/happy11.ts",
             type: DirType.TS,
             isExpanded: false,
             children: [
@@ -41,6 +44,7 @@ const initialState: NavBarState = {
       {
         id: "2",
         name: "sappy",
+        path: "root/sappy",
         type: DirType.OTHERS,
         isExpanded: false,
         children: [
@@ -58,12 +62,11 @@ export const navBarSlice = createSlice({
   initialState,
   reducers: {
     renameDir: (state, { payload }) => {
-      const new1 = updateDirNameById(
+      state.dirData = updateDirNameById(
         state.dirData,
         payload.id,
         payload.newName
       )
-      state.dirData = new1
     },
     addDir: (state, { payload }) => {
       state.dirData = insertNewDir(

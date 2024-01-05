@@ -32,6 +32,8 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
   const defaultAddState = { isEditing: false, isFolder: false }
   const [addState, setAddState] = useState<{ isEditing: boolean, isFolder: boolean }>(defaultAddState)
   
+  if (dirData.id === "0")console.log(dirData)
+
   useEffect(() => {
     if (searchTerm) {
       dispatch(saveExpandedDir({ 
@@ -107,6 +109,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
         let newDir: IDirectory = {
           id: uuidv4(),
           name: newName,
+          path: `${dirData.path}/${newName}`,
           type: DirType.FOLDER,
           isExpanded: false,
           children: []

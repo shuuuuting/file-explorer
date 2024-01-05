@@ -3,7 +3,7 @@ import { removeFileContent } from "#containers/edit-pane/edit-pane.slice"
 import { addDir, removeDir, saveCachedInfo, saveWarningMsg, selectCachedDirInfo } from "#containers/nav-bar/nav-bar.slice"
 import { DirType } from "../directory/directory.config"
 import { IDirectory } from "../directory/directory.type"
-import { traverseAndModifyAll } from "../directory/directory.helper"
+import { replacePathPrefix, traverseAndModifyAll } from "../directory/directory.helper"
 import { v4 as uuidv4 } from "uuid"
 
 export const enum ButtonAction {
@@ -59,29 +59,38 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
 
   const handlePaste = () => {
     if (cachedDirInfo) {
-      const cachedDirData = cachedDirInfo.dirData
+      let newDir = { ...cachedDirInfo.dirData }
+      const newPrefix = dirData.path
+      const prefix = newDir.path.substring(0, newDir.path.lastIndexOf("/"))
 
       if (cachedDirInfo.action === ButtonAction.CUT) {
-        if (hasDuplicateName(dirData.children, cachedDirData.name)) {
+        if (hasDuplicateName(dirData.children, newDir.name)) {
           dispatch(saveWarningMsg("Unable to move the file because its name already exists at destination."))
         } else {
-          dispatch(removeDir(dirData.id))
-          dispatch(removeFileContent(dirData.id))
-          dispatch(addDir({ parentId: dirData.id, cachedDirData }))
+          dispatch(removeDir(newDir.id))
+          dispatch(removeFileContent(newDir.id))
+          if (prefix !== newPrefix) {
+            newDir = traverseAndModifyAll(
+              newDir, "path", (path: string) => replacePathPrefix(path, prefix, newPrefix)
+            )
+          }
+          dispatch(addDir({ parentId: dirData.id, newDir }))
         }
       } else {
-        let dirName = cachedDirData.name
-        if (hasDuplicateName(dirData.children, cachedDirData.name)) {
-          dirName = getCopyName(cachedDirData.name, cachedDirData.type, 0)
+        let dirName = newDir.name
+        if (hasDuplicateName(dirData.children, newDir.name)) {
+          dirName = getCopyName(newDir.name, newDir.type, 0)
           if (hasDuplicateName(dirData.children, dirName)) {
-            dirName = getCopyName(cachedDirData.name, cachedDirData.type, dirData.children.filter(child => child.name === dirName).length)
+            dirName = getCopyName(newDir.name, newDir.type, dirData.children.filter(child => child.name === dirName).length)
           }
         }
-        let newDir = { 
-          ...cachedDirData, 
-          name: dirName
-        }
+        newDir = { ...newDir, name: dirName, path: `${newPrefix}/${dirName}` }
         newDir = traverseAndModifyAll(newDir, "id", () => uuidv4())
+        if (prefix !== newPrefix) {
+          newDir = traverseAndModifyAll(
+            newDir, "path", (path: string) => replacePathPrefix(path, prefix, newPrefix)
+          )
+        }
         dispatch(addDir({ parentId: dirData.id, newDir }))
       }
       dispatch(saveCachedInfo(undefined))
