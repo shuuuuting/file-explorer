@@ -33,8 +33,6 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
   const defaultAddState = { isEditing: false, isFolder: false }
   const [addState, setAddState] = useState<{ isEditing: boolean, isFolder: boolean }>(defaultAddState)
   
-  if (dirData.id === "0")console.log(dirData)
-
   useEffect(() => {
     if (searchTerm) {
       dispatch(saveExpandedDir({ 
@@ -146,21 +144,20 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
     dispatch(removeDir(dirData.id))
     dispatch(removeFileContent(dirData.id))
   }
-  console.log(isSearching)
-
+  
   return (
     <>
       <div 
         className={"navbar-item"
           + `${activeTabId === dirData.id ? " selected" : ""}`
           + `${isMenuShow ? " rightClicked" : ""}`
-          + `${isCutting ? " isCutting" : ""}`
+          + `${isCutting ? " cut" : ""}`
+          + `${!isVisible ? " invisible" : ""}`
         } 
-        style={{ display: isVisible ? "flex" : "none" }}
         onClick={handleClick}
         onContextMenu={handleRightClick}
       >
-        {isMenuShow && 
+        {isMenuShow && !isSearching &&
           <div 
             className="context-menu-container"
             style={{ visibility: isMenuShow ? "visible" : "hidden" }}
@@ -196,7 +193,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
               {dirData.name}
             </span>
         }
-        {isRenaming || isCutting || 
+        {isRenaming || isCutting || isSearching ||
           <span className="navbar-item-action">
             <span 
               className="navbar-item-button"
