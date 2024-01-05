@@ -22,17 +22,17 @@ const hasDuplicateName = (children: IDirectory[], dirName: string) => {
 }
 
 const getCopyName = (dirName: string, dirType: DirType) => {
+  let copyName = `${dirName} copy`
   if (dirType === DirType.FOLDER) {
     return `${dirName} copy`
   }
 
   const parts = dirName.split(".")
-  const extension = parts.pop()
+  const extension = parts.length > 1 ? parts.pop() : undefined
 
-  let copyName = `${parts.join(".")} copy`
   if (extension) {
-    copyName += `.${extension}`
-  }
+    copyName = `${parts.join(".")} copy.${extension}`
+  } 
   return copyName
 }
 
@@ -55,6 +55,7 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
   const handlePaste = () => {
     if (cachedDirInfo) {
       const cachedDirData = cachedDirInfo.dirData
+
       if (cachedDirInfo.action === ButtonAction.CUT) {
         if (hasDuplicateName(dirData.children, cachedDirData.name)) {
           // dispatch warning
