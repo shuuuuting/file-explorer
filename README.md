@@ -1,5 +1,7 @@
 # File Explorer
 
+[Try it out!](https://shuuuuting.github.io/file-explorer/)
+
 ## Tech
 
 - React
@@ -18,21 +20,21 @@
 
 ### Navigation Bar
 
-**Search Bar**
+**- Search Bar**
 
 ▶ You can search for folders and files by name
 
 ![search-bar](./public/imgs/search-bar.png)
 
-**Hover Actions**
+**- Hover Actions**
 
 ▶ By hovering, you can rename / create child folder or file / delete
 
 ![hover-actions](./public/imgs/hover-actions.png)
 
-**Right Click Actions**
+**- Right Click Actions**
 
-▶ By right clicking, you can copy / cut / paste
+▶ By right clicking, you can cut / copy / paste
 
 ![right-click-actions](./public/imgs/right-click-actions.png)
 
@@ -42,7 +44,7 @@ After creating a new file or clicking on an existing one, the corresponding file
 
 Press (Ctrl + S) or (Command + S) to save content.
 
-**Default Content**
+**- Default Content**
 
 ▶ Initiate content for txt / json / js / ts / txt file type 
 
