@@ -2,7 +2,7 @@
   background-color: var(--primary-400);
   width: 80%;
 
-  .tabs-container {
+  .tabbar-container {
     border: 1px var(--primary-300) solid;
     border-top: none;
     color: var(--primary-100);
@@ -25,10 +25,10 @@
           background-color: var(--secondary-200);
           content: "";
           display: block;
-          left: -2px;
+          left: 0;
           top: 0;
           height: 3px;
-          width: calc(100% + 4px);
+          width: 100%;
           position: absolute;
         }
       }
@@ -57,8 +57,20 @@
     }
   }
 
+  .breadcrumb-container {
+    align-items: center;
+    background-color: var(--primary-300);
+    color: var(--primary-100);
+    display: flex;
+    font-size: 12px;
+    font-weight: 500;
+    height: 25px;
+    overflow-x: hidden;
+    padding: 0 12px;
+  }
+
   .editpane-editor {
     padding-top: 8px;
-    height: calc(100% - 35px);
+    height: calc(100% - 60px);
   }
 }

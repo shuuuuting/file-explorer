@@ -24,7 +24,7 @@ export const TabBar: React.FC = () => {
   }
 
   return (
-    <div className="tabs-container">
+    <div className="tabbar-container">
       {showedTabs.map((tab: ITab) => (
         <div 
           id={`tab-${tab.id}`}
