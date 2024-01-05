@@ -1,21 +1,27 @@
 import "./nav-bar.style.scss"
 import React, { useEffect } from "react"
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { Directory } from "./components/directory"
+import { SlClose } from "react-icons/sl";
+import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { SearchBox } from "./components/search-box"
-import { saveOpenedMenuId, selectDirData, selectSearchTerm, selectShowedDirData } from "./nav-bar.slice"
+import { Directory } from "./components/directory"
+import { saveOpenedMenuId, saveWarningMsg, selectDirData, selectSearchTerm, selectShowedDirData, selectWarningMsg } from "./nav-bar.slice"
 
 export const NavBar: React.FC = () => {
   const dispatch = useAppDispatch()
   const searchTerm = useAppSelector(selectSearchTerm)
   const showedDirData = useAppSelector(selectShowedDirData)
   const dirData = useAppSelector(selectDirData)
+  const warningMsg = useAppSelector(selectWarningMsg)
 
   useEffect(() => {
     const handleClickElsewhere = () => dispatch(saveOpenedMenuId(undefined))
     window.addEventListener("click", handleClickElsewhere)
     return () => removeEventListener("click", handleClickElsewhere)
   }, [])
+
+  const handleClose = () => {
+    dispatch(saveWarningMsg(""))
+  }
   
   return (
     <div className="navbar-container">
@@ -28,6 +34,20 @@ export const NavBar: React.FC = () => {
           ? <Directory parent={undefined} dirData={showedDirData} />
           : <div className="navbar-hint"> No results found. </div>
         : <Directory parent={undefined} dirData={dirData} />
+      }
+      {/* pop out warning */}
+      {warningMsg && 
+        <span className="navbar-warning">
+          <span 
+            className="navbar-warning-button"
+            onClick={handleClose}
+          >
+            <SlClose />
+          </span>
+          <span className="navbar-warning-text">
+            {warningMsg}
+          </span>
+        </span>
       }
     </div>
   )

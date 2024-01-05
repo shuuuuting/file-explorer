@@ -23,6 +23,41 @@
     text-align: center;
   }
 
+  .navbar-warning {
+    border: 1px solid var(--warning);
+    box-shadow: 4px 4px 20px var(--warning);
+    color: var(--primary-0);
+    padding: 12px;
+    font-size: 12px;
+    font-weight: 400;
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    width: calc(20% - 8px);
+
+    .navbar-warning-button {
+      color: var(--primary-100);
+      display: flex;
+      position: absolute;
+      right: 8px;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      &:hover {
+        color: var(--primary-0);
+      }
+    }
+
+    .navbar-warning-text {
+      display: block;
+      width: calc(100% - 12px);
+      word-wrap: break-word;
+    }
+  }
+
   .navbar-item {
     align-items: center; 
     color: var(--primary-100);

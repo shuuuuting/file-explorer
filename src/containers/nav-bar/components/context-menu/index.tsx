@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { removeFileContent } from "#containers/edit-pane/edit-pane.slice"
-import { addDir, removeDir, saveCachedInfo, selectCachedDirInfo } from "#containers/nav-bar/nav-bar.slice"
+import { addDir, removeDir, saveCachedInfo, saveWarningMsg, selectCachedDirInfo } from "#containers/nav-bar/nav-bar.slice"
 import { DirType } from "../directory/directory.config"
 import { IDirectory } from "../directory/directory.type"
-import { traverseAndModifyAll } from "../directory/directory.utils"
+import { traverseAndModifyAll } from "../directory/directory.helper"
 import { v4 as uuidv4 } from "uuid"
 
 export const enum ButtonAction {
@@ -45,10 +45,12 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
   )
 
   const handleCut = () => {
+    dispatch(saveWarningMsg(""))
     dispatch(saveCachedInfo({ action: ButtonAction.CUT, dirData }))
   }
   
   const handleCopy = () => {
+    dispatch(saveWarningMsg(""))
     dispatch(saveCachedInfo({ action: ButtonAction.COPY, dirData }))
   }
 
@@ -58,7 +60,7 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
 
       if (cachedDirInfo.action === ButtonAction.CUT) {
         if (hasDuplicateName(dirData.children, cachedDirData.name)) {
-          // dispatch warning
+          dispatch(saveWarningMsg("Unable to move the file because its name already exists at destination."))
         } else {
           dispatch(removeDir(dirData.id))
           dispatch(removeFileContent(dirData.id))
