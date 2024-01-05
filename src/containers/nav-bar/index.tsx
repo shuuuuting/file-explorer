@@ -4,12 +4,10 @@ import { SlClose } from "react-icons/sl";
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { SearchBox } from "./components/search-box"
 import { Directory } from "./components/directory"
-import { saveOpenedMenuId, saveWarningMsg, selectDirData, selectSearchTerm, selectShowedDirData, selectWarningMsg } from "./nav-bar.slice"
+import { saveOpenedMenuId, saveWarningMsg, selectDirData, selectWarningMsg } from "./nav-bar.slice"
 
 export const NavBar: React.FC = () => {
   const dispatch = useAppDispatch()
-  const searchTerm = useAppSelector(selectSearchTerm)
-  const showedDirData = useAppSelector(selectShowedDirData)
   const dirData = useAppSelector(selectDirData)
   const warningMsg = useAppSelector(selectWarningMsg)
 
@@ -29,11 +27,9 @@ export const NavBar: React.FC = () => {
       {/* search section */}
       <SearchBox />
       {/* folders tree */}
-      {searchTerm 
-        ? showedDirData 
-          ? <Directory parent={undefined} dirData={showedDirData} />
-          : <div className="navbar-hint"> No results found. </div>
-        : <Directory parent={undefined} dirData={dirData} />
+      {dirData.isVisible 
+        ? <Directory parent={undefined} dirData={dirData} />
+        : <div className="navbar-hint"> No results found. </div>
       }
       {/* pop out warning */}
       {warningMsg && 

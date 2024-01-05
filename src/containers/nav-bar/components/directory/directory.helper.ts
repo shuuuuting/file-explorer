@@ -112,21 +112,24 @@ export const pruneDirById = (root: IDirectory, id: string): IDirectory => {
   return newRoot
 }
 
-export const filterDirs = (root: IDirectory, term: string): IDirectory | undefined => {
-  if (root.name.includes(term)) { 
-    return {
-      ...root,
-      children: root.children.map((child: IDirectory) => 
-        filterDirs(child, term)).filter(Boolean) as IDirectory[]
-    }
-  } 
+export const updateVisibility = (node: IDirectory, term: string): IDirectory => {
+  // check visibility from children 
+  node.children = node.children.map(child => updateVisibility(child, term))
 
-  const filteredChildren = root.children.map((child: IDirectory) => 
-      filterDirs(child, term)).filter(Boolean) as IDirectory[]
-  
-  if (filteredChildren.length > 0) {
-    return { ...root, children: filteredChildren }
+  // any of the children is visible
+  if (node.children.some(child => child.isVisible)) {
+    node.isVisible = true
+    node.isExpanded = true
   }
-  
-  return undefined
+  // curr node is matched & children are all invisible
+  else if (node.name.toLowerCase().includes(term.toLowerCase())) {
+    node.isVisible = true
+    node.isExpanded = false
+  }
+  else {
+    node.isVisible = false
+    node.isExpanded = false
+  }
+
+  return node
 }

@@ -7,5 +7,6 @@ export interface IDirectory {
   path: string
   type: DirType
   isExpanded: boolean
+  isVisible: boolean
   children: IDirectory[]
 }

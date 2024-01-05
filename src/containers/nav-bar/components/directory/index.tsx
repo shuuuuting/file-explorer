@@ -19,13 +19,14 @@ import { v4 as uuidv4 } from "uuid"
 export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined, dirData: IDirectory }) => {
   const dispatch = useAppDispatch()
   const searchTerm = useAppSelector(selectSearchTerm)
+  const isSearching = searchTerm.length > 0
   const fileContent = useAppSelector(state => selectFileById(state, dirData.id)) 
   const cachedDirInfo = useAppSelector(selectCachedDirInfo)
   const isCutting = cachedDirInfo?.action === ButtonAction.CUT && cachedDirInfo.dirData.id === dirData.id
   const activeTabId = useAppSelector(selectActiveTabId)
   const showedTab = useAppSelector(state => selectShowedTabById(state, dirData.id))
   const isFolderType = dirData.type === DirType.FOLDER
-  const { isExpanded } = dirData
+  const { isExpanded, isVisible } = dirData
   const isMenuShow = useAppSelector(selectOpenedMenuId) === dirData.id
   const [isRenaming, setIsRenaming] = useState<boolean>(false)
   const [isNameInvalid, setIsNameInvalid] = useState(false)
@@ -112,6 +113,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
           path: `${dirData.path}/${newName}`,
           type: DirType.FOLDER,
           isExpanded: false,
+          isVisible: true,
           children: []
         } 
 
@@ -144,6 +146,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
     dispatch(removeDir(dirData.id))
     dispatch(removeFileContent(dirData.id))
   }
+  console.log(isSearching)
 
   return (
     <>
@@ -153,6 +156,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
           + `${isMenuShow ? " rightClicked" : ""}`
           + `${isCutting ? " isCutting" : ""}`
         } 
+        style={{ display: isVisible ? "flex" : "none" }}
         onClick={handleClick}
         onContextMenu={handleRightClick}
       >

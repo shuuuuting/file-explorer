@@ -2,12 +2,11 @@ import { createSlice } from "@reduxjs/toolkit"
 import { RootState } from "#app/store"
 import { IDirectory } from "./components/directory/directory.type"
 import { DirType } from "./components/directory/directory.config"
-import { filterDirs, insertNewDir, pruneDirById, traverseAndModifyOne, updateDirNameById } from "./components/directory/directory.helper"
+import { insertNewDir, pruneDirById, traverseAndModifyOne, updateDirNameById, updateVisibility } from "./components/directory/directory.helper"
 import { ButtonAction } from "./components/context-menu"
 
 export interface NavBarState {
   dirData: IDirectory,
-  showedDirData?: IDirectory,
   cachedDirInfo?: { action: ButtonAction, dirData: IDirectory },
   searchTerm: string,
   openedMenuId?: string,
@@ -21,6 +20,7 @@ const initialState: NavBarState = {
     path: "root",
     type: DirType.FOLDER,
     isExpanded: true,
+    isVisible: true,
     children: [
       {
         id: "1",
@@ -28,6 +28,7 @@ const initialState: NavBarState = {
         path: "root/happy",
         type: DirType.FOLDER,
         isExpanded: false,
+        isVisible: true,
         children: [
           {
             id: "11",
@@ -35,6 +36,7 @@ const initialState: NavBarState = {
             path: "root/happy/happy11.ts",
             type: DirType.TS,
             isExpanded: false,
+            isVisible: true,
             children: [
               
             ]
@@ -47,6 +49,7 @@ const initialState: NavBarState = {
         path: "root/sappy",
         type: DirType.OTHERS,
         isExpanded: false,
+        isVisible: true,
         children: [
           
         ]
@@ -96,7 +99,7 @@ export const navBarSlice = createSlice({
       state.searchTerm = payload
     },
     searchDirs: (state) => {
-      state.showedDirData = filterDirs(
+      state.dirData = updateVisibility(
         state.dirData,
         state.searchTerm
       )
@@ -117,7 +120,6 @@ export const {
 } = navBarSlice.actions
 
 export const selectDirData = (state: RootState) => state.navbar.dirData
-export const selectShowedDirData = (state: RootState) => state.navbar.showedDirData
 export const selectCachedDirInfo = (state: RootState) => state.navbar.cachedDirInfo
 export const selectSearchTerm = (state: RootState) => state.navbar.searchTerm
 export const selectOpenedMenuId = (state: RootState) => state.navbar.openedMenuId
