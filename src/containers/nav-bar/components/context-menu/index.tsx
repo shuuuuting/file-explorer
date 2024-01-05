@@ -21,10 +21,10 @@ const hasDuplicateName = (children: IDirectory[], dirName: string) => {
   return children.findIndex(child => child.name === dirName) !== -1
 }
 
-const getCopyName = (dirName: string, dirType: DirType) => {
-  let copyName = `${dirName} copy`
+const getCopyName = (dirName: string, dirType: DirType, duplicateCount: number) => {
+  let copyName = `${dirName} copy${duplicateCount ? duplicateCount + 1 : ""}`
   if (dirType === DirType.FOLDER) {
-    return `${dirName} copy`
+    return copyName
   }
 
   const parts = dirName.split(".")
@@ -32,6 +32,9 @@ const getCopyName = (dirName: string, dirType: DirType) => {
 
   if (extension) {
     copyName = `${parts.join(".")} copy.${extension}`
+    if (duplicateCount > 0) {
+      copyName = `${parts.join(".")} copy${duplicateCount ? duplicateCount + 1 : ""}.${extension}`
+    }
   } 
   return copyName
 }
@@ -67,11 +70,16 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
           dispatch(addDir({ parentId: dirData.id, cachedDirData }))
         }
       } else {
+        let dirName = cachedDirData.name
+        if (hasDuplicateName(dirData.children, cachedDirData.name)) {
+          dirName = getCopyName(cachedDirData.name, cachedDirData.type, 0)
+          if (hasDuplicateName(dirData.children, dirName)) {
+            dirName = getCopyName(cachedDirData.name, cachedDirData.type, dirData.children.filter(child => child.name === dirName).length)
+          }
+        }
         let newDir = { 
           ...cachedDirData, 
-          name: hasDuplicateName(dirData.children, cachedDirData.name) 
-                  ? getCopyName(cachedDirData.name, cachedDirData.type) 
-                  : cachedDirData.name
+          name: dirName
         }
         newDir = traverseAndModifyAll(newDir, "id", () => uuidv4())
         dispatch(addDir({ parentId: dirData.id, newDir }))
