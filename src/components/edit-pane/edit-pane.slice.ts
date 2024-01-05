@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { IFileContent, ITab } from "./edit-pane.interface"
 import { RootState } from "#app/store"
-import { pruneFileContentById, pruneTabById, updateFileContentById, updateTabNameById } from "./components/editor/editor.helper"
+import { pruneFileContentById, pruneTabById, updateFileContentById, updateTabNameById } from "./editor/editor.helper"
 
 export interface EditPaneState {
   activeTabId?: string,

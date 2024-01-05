@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { RootState } from "#app/store"
-import { IDirectory } from "./components/directory/directory.type"
-import { DirType } from "./components/directory/directory.config"
-import { insertNewDir, pruneDirById, traverseAndModifyOne, updateDirNameById, updateVisibility } from "./components/directory/directory.helper"
-import { ButtonAction } from "./components/context-menu"
+import { IDirectory } from "./directory/directory.type"
+import { DirType } from "./directory/directory.config"
+import { insertNewDir, pruneDirById, traverseAndModifyOne, updateDirNameById, updateVisibility } from "./directory/directory.helper"
+import { ButtonAction } from "./context-menu"
 
 export interface NavBarState {
   dirData: IDirectory,

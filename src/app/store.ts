@@ -1,6 +1,6 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
-import editPaneReducer from "#containers/edit-pane/edit-pane.slice"
-import navBarReducer from "#containers/nav-bar/nav-bar.slice"
+import editPaneReducer from "#components/edit-pane/edit-pane.slice"
+import navBarReducer from "#components/nav-bar/nav-bar.slice"
 import { combineReducers } from "redux"
 import storage from "redux-persist/lib/storage"
 import { persistReducer } from "redux-persist"

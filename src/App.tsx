@@ -1,6 +1,6 @@
 import React from "react"
-import { NavBar } from "./containers/nav-bar"
-import { EditPane } from "./containers/edit-pane"
+import { NavBar } from "./components/nav-bar"
+import { EditPane } from "./components/edit-pane"
 
 const App: React.FC = () => {
   return (

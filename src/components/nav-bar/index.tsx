@@ -2,8 +2,8 @@ import "./nav-bar.style.scss"
 import React, { useEffect } from "react"
 import { SlClose } from "react-icons/sl";
 import { useAppDispatch, useAppSelector } from "#app/hooks"
-import { SearchBox } from "./components/search-box"
-import { Directory } from "./components/directory"
+import { SearchBox } from "./search-box"
+import { Directory } from "./directory"
 import { saveOpenedMenuId, saveWarningMsg, selectDirData, selectWarningMsg } from "./nav-bar.slice"
 
 export const NavBar: React.FC = () => {

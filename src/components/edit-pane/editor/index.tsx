@@ -2,8 +2,8 @@ import { useEffect } from "react"
 import { Editor as MonacoEditor } from "@monaco-editor/react"
 import { InitContent, LanguageMap } from "./editor.config"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
-import { cacheDraftContent, selectFileById, selectShowedTabById, updateFileContent } from "#containers/edit-pane/edit-pane.slice"
-import { getFileType } from "#containers/nav-bar/components/directory/directory.helper"
+import { cacheDraftContent, selectFileById, selectShowedTabById, updateFileContent } from "#components/edit-pane/edit-pane.slice"
+import { getFileType } from "#components/nav-bar/directory/directory.helper"
 import { debounce } from "#utils/debounce"
 
 export const Editor = ({ tabId }: { tabId: string }) => {

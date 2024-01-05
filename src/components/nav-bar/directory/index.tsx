@@ -10,9 +10,9 @@ import { DirType } from "./directory.config"
 import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { getFileType } from "./directory.helper"
-import { renameDir, addDir, removeDir, selectSearchTerm, selectOpenedMenuId, saveOpenedMenuId, saveExpandedDir, selectCachedDirInfo } from "#containers/nav-bar/nav-bar.slice"
-import { addFileContent, addTab, removeFileContent, renameTab, saveActiveTabId, selectActiveTabId, selectFileById, selectShowedTabById } from "#containers/edit-pane/edit-pane.slice"
-import { InitContent } from "#containers/edit-pane/components/editor/editor.config"
+import { renameDir, addDir, removeDir, selectSearchTerm, selectOpenedMenuId, saveOpenedMenuId, saveExpandedDir, selectCachedDirInfo } from "#components/nav-bar/nav-bar.slice"
+import { addFileContent, addTab, removeFileContent, renameTab, saveActiveTabId, selectActiveTabId, selectFileById, selectShowedTabById } from "#components/edit-pane/edit-pane.slice"
+import { InitContent } from "#components/edit-pane/editor/editor.config"
 import { ButtonAction, ContextMenu } from "../context-menu"
 import { v4 as uuidv4 } from "uuid"
 
@@ -144,7 +144,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
     dispatch(removeDir(dirData.id))
     dispatch(removeFileContent(dirData.id))
   }
-  
+
   return (
     <>
       <div 

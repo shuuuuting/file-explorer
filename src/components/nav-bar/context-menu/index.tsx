@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "#app/hooks"
-import { removeFileContent } from "#containers/edit-pane/edit-pane.slice"
-import { addDir, removeDir, saveCachedInfo, saveWarningMsg, selectCachedDirInfo } from "#containers/nav-bar/nav-bar.slice"
+import { removeFileContent } from "#components/edit-pane/edit-pane.slice"
+import { addDir, removeDir, saveCachedInfo, saveWarningMsg, selectCachedDirInfo } from "#components/nav-bar/nav-bar.slice"
 import { DirType } from "../directory/directory.config"
 import { IDirectory } from "../directory/directory.type"
 import { replacePathPrefix, traverseAndModifyAll } from "../directory/directory.helper"

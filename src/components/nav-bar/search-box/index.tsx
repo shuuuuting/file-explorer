@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "#app/hooks"
-import { saveSearchTerm, searchDirs, selectSearchTerm } from "#containers/nav-bar/nav-bar.slice"
+import { saveSearchTerm, searchDirs, selectSearchTerm } from "#components/nav-bar/nav-bar.slice"
 import { debounce } from "#utils/debounce"
 
 export const SearchBox = () => {

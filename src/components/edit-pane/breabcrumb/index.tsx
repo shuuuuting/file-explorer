@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useAppSelector } from "#app/hooks"
-import { selectDirData } from "#containers/nav-bar/nav-bar.slice"
+import { selectDirData } from "#components/nav-bar/nav-bar.slice"
 import { getNodeById } from "#utils/tree"
 
 export const Breadcrumb = ({ tabId }: { tabId: string }) => {
