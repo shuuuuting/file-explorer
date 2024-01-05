@@ -81,11 +81,13 @@ export const navBarSlice = createSlice({
     saveCachedInfo: (state, { payload }) => {
       state.cachedDirInfo = payload
     },
-    searchDirs: (state, { payload }) => {
+    saveSearchTerm: (state, { payload }) => {
       state.searchTerm = payload
+    },
+    searchDirs: (state) => {
       state.showedDirData = filterDirs(
         state.dirData,
-        payload
+        state.searchTerm
       )
     },
     saveOpenedMenuId: (state, { payload }) => {
@@ -97,7 +99,7 @@ export const navBarSlice = createSlice({
   },
 })
 
-export const { renameDir, addDir, removeDir, saveCachedInfo, searchDirs, saveOpenedMenuId, saveExpandedDir } = navBarSlice.actions
+export const { renameDir, addDir, removeDir, saveCachedInfo, saveSearchTerm, searchDirs, saveOpenedMenuId, saveExpandedDir } = navBarSlice.actions
 
 export const selectDirData = (state: RootState) => state.navbar.dirData
 export const selectShowedDirData = (state: RootState) => state.navbar.showedDirData

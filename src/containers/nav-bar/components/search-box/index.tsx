@@ -1,21 +1,28 @@
-import { useAppDispatch } from "#app/hooks"
-import { searchDirs } from "#containers/nav-bar/nav-bar.slice"
+import { useAppDispatch, useAppSelector } from "#app/hooks"
+import { saveSearchTerm, searchDirs, selectSearchTerm } from "#containers/nav-bar/nav-bar.slice"
 import { debounce } from "#utils/debounce"
 
 export const SearchBox = () => {
   const dispatch = useAppDispatch()
+  const searchTerm = useAppSelector(selectSearchTerm)
 
-  const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(searchDirs(e.target.value))
-  }, 300)
+  const handleSearch = debounce(() => {
+    dispatch(searchDirs())
+  }, 500)
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(saveSearchTerm(e.target.value))
+    handleSearch()
+  }
 
   return (
     <div className="navbar-item">
       <input 
         className="navbar-search-text" 
         type="text"
+        value={searchTerm}
         placeholder="Search..."
-        onChange={handleSearch}
+        onChange={handleChange}
       />
     </div>
   )
