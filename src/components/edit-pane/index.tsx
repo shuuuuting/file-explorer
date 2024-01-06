@@ -4,7 +4,7 @@ import { TabBar } from "./tab-bar"
 import { Editor } from "./editor"
 import { useAppSelector } from "#app/hooks"
 import { selectActiveTabId } from "./edit-pane.slice"
-import { Breadcrumb } from "./breabcrumb"
+import { Breadcrumb } from "./breadcrumb"
 
 export const EditPane: React.FC = () => {
   const activeTabId = useAppSelector(selectActiveTabId)
