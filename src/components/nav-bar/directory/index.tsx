@@ -157,7 +157,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
         onClick={handleClick}
         onContextMenu={handleRightClick}
       >
-        {isMenuShow && !isSearching &&
+        {isMenuShow && !isSearching && !isRenaming && !isCutting &&
           <div 
             className="context-menu-container"
             style={{ visibility: isMenuShow ? "visible" : "hidden" }}
@@ -193,7 +193,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
               {dirData.name}
             </span>
         }
-        {isRenaming || isCutting || isSearching ||
+        {isSearching || isRenaming || isCutting || isMenuShow ||
           <span className="navbar-item-action">
             <span 
               className="navbar-item-button"

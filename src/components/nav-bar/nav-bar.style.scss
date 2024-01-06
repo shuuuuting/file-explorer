@@ -115,7 +115,7 @@
 
     &:hover {
       .navbar-item-action {
-        background-color: transparent;
+        background-color: var(--secondary-500);
         display: flex;
         height: 100%;
         margin-left: 4px;
