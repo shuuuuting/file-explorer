@@ -1,4 +1,4 @@
-# File Explorer
+# File Explorer (Web Version)
 
 [Try it out!](https://shuuuuting.github.io/file-explorer/)
 
