@@ -1,4 +1,4 @@
-# File Explorer
+# File Explorer (Electron Version)
 
 [Try it out!](https://shuuuuting.github.io/file-explorer/)
 
@@ -8,6 +8,7 @@
 - Redux
 - TypeScript
 - Local Storage
+- Electron
 
 ## Features
 
@@ -51,8 +52,19 @@ Press (Ctrl + S) or (Command + S) to save content.
 ![init-content](./public/imgs/init-content.png)
 
 
-## Run the App
+## Run the Electron App 
 
 ```shell
 npm install && npm run start
+```
+
+Run in a seperate terminal
+```shell
+npm run electron:start
+```
+
+## Package the Electron App 
+
+```shell
+npm run electron:build
 ```

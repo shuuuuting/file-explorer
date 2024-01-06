@@ -61,6 +61,15 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "build": {
+    "productName": "File Explorer",
+    "mac": {
+      "icon": "build/icon-app.icns"
+   },
+   "win": {
+      "icon": "build/icon-app.png"
+    }
+  },
   "browserslist": {
     "production": [
       ">0.2%",
