@@ -1,5 +1,6 @@
 .editpane-container {
   background-color: var(--primary-400);
+  max-width: calc(100% - 200px);
   width: 80%;
 
   .tabbar-container {

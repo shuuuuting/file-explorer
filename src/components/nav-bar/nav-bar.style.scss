@@ -60,6 +60,11 @@
     }
   }
 
+  .navbar-indent {
+    border-left: 1px solid var(--primary-200);
+    margin-left: 16px;
+  }
+
   .navbar-item {
     align-items: center; 
     color: var(--primary-100);

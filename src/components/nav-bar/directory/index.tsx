@@ -228,7 +228,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
           </span>
         }
       </div>
-      <div style={{ paddingLeft: 6 }}>
+      <div className="navbar-indent">
         {addState.isEditing &&
           <div className="navbar-input" >
             <span className="navbar-input-icon">
