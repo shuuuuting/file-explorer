@@ -24,8 +24,8 @@
   }
 
   .navbar-warning {
-    border: 1px solid var(--warning);
-    box-shadow: 4px 4px 20px var(--warning);
+    border: 2px solid var(--warning);
+    box-shadow: 0 0 4px var(--primary-100);
     color: var(--primary-0);
     padding: 12px;
     font-size: 12px;
@@ -33,6 +33,7 @@
     position: absolute;
     bottom: 4px;
     left: 4px;
+    min-width: 192px;
     width: calc(20% - 8px);
 
     .navbar-warning-button {
@@ -52,6 +53,7 @@
     }
 
     .navbar-warning-text {
+      color: var(--primary-100);
       display: block;
       width: calc(100% - 12px);
       word-wrap: break-word;

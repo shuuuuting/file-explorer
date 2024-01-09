@@ -59,22 +59,22 @@ export const ContextMenu = ({ dirData }: { dirData: IDirectory }) => {
 
   const handlePaste = () => {
     if (cachedDirInfo) {
-      let newDir = { ...cachedDirInfo.dirData }
+      const prefix = cachedDirInfo.dirData.path.substring(0, cachedDirInfo.dirData.path.lastIndexOf("/"))
       const newPrefix = dirData.path
-      const prefix = newDir.path.substring(0, newDir.path.lastIndexOf("/"))
+      let newDir = { ...cachedDirInfo.dirData }
 
       if (cachedDirInfo.action === ButtonAction.CUT) {
-        if (hasDuplicateName(dirData.children, newDir.name)) {
-          dispatch(saveWarningMsg("Unable to move the file because its name already exists at destination."))
-        } else {
-          dispatch(removeDir(newDir.id))
-          dispatch(removeFileContent(newDir.id))
-          if (prefix !== newPrefix) {
+        if (prefix !== newPrefix) {
+          if (hasDuplicateName(dirData.children, newDir.name)) {
+            dispatch(saveWarningMsg("Unable to move the file because its name already exists at destination."))
+          } else {
+            dispatch(removeDir(newDir.id))
+            dispatch(removeFileContent(newDir.id))
             newDir = traverseAndModifyAll(
               newDir, "path", (path: string) => replacePathPrefix(path, prefix, newPrefix)
             )
+            dispatch(addDir({ parentId: dirData.id, newDir }))
           }
-          dispatch(addDir({ parentId: dirData.id, newDir }))
         }
       } else {
         let dirName = newDir.name
