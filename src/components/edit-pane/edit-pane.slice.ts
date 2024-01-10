@@ -18,21 +18,21 @@ export const editPaneSlice = createSlice({
   name: "editpane",
   initialState,
   reducers: {
-    saveActiveTabId: (state, { payload }) => {
+    saveActiveTabId: (state, { payload }: { payload: string }) => {
       state.activeTabId = payload
     },
-    addTab: (state, { payload }) => {
+    addTab: (state, { payload }: { payload: ITab }) => {
       state.showedTabs = [...state.showedTabs, payload]
       state.activeTabId = payload.id
     },
-    renameTab: (state, { payload }) => {
+    renameTab: (state, { payload }: { payload: { id: string, newName: string } }) => {
       state.showedTabs = updateTabNameById(
         state.showedTabs,
         payload.id,
         payload.newName
       )
     },
-    removeTab: (state, { payload }) => {
+    removeTab: (state, { payload }: { payload: string }) => {
       const prunedTabs = pruneTabById(state.showedTabs, payload)
       state.showedTabs = prunedTabs 
       if (prunedTabs.length === 0) {
@@ -41,10 +41,10 @@ export const editPaneSlice = createSlice({
         state.activeTabId = prunedTabs[0].id
       }
     },
-    addFileContent: (state, { payload }) => {
+    addFileContent: (state, { payload }: { payload: IFileContent }) => {
       state.fileContents = [...state.fileContents, payload]
     },
-    removeFileContent: (state, { payload }) => {
+    removeFileContent: (state, { payload }: { payload: string }) => {
       const { newFileContents, newShowedTabs } = pruneFileContentById(
         state.fileContents,
         state.showedTabs,
@@ -58,7 +58,7 @@ export const editPaneSlice = createSlice({
         state.activeTabId = newShowedTabs[0].id
       }
     },
-    cacheDraftContent: (state, { payload }) => {
+    cacheDraftContent: (state, { payload }: { payload: { id: string, content: string } }) => {
       const { newFileContents, newShowedTabs } = updateFileContentById(
         state.fileContents,
         state.showedTabs,
@@ -69,7 +69,7 @@ export const editPaneSlice = createSlice({
       state.fileContents = newFileContents
       state.showedTabs = newShowedTabs
     },
-    updateFileContent: (state, { payload }) => {
+    updateFileContent: (state, { payload }: { payload: { id: string } }) => {
       const { newFileContents, newShowedTabs } = updateFileContentById(
         state.fileContents,
         state.showedTabs,

@@ -25,7 +25,7 @@ export const Editor = ({ tabId }: { tabId: string }) => {
 
   const handleChange = debounce((value: string | undefined) => {
     if (draftContent !== value) {
-      dispatch(cacheDraftContent( { id: tabId, content: value }))
+      dispatch(cacheDraftContent( { id: tabId, content: value || "" }))
     }
   }, 300)
 

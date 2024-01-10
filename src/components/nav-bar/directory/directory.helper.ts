@@ -1,5 +1,5 @@
 import { DirType, SupportedFileTypes } from "./directory.config"
-import { IDirectory } from "./directory.type"
+import { IDirectory } from "./directory.interface"
 
 export const getFileType = (fileName: string) => {
   const fileType = fileName.split(".").pop() ?? ""

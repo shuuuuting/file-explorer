@@ -1,4 +1,4 @@
-import { IDirectory } from "./directory.type"
+import { IDirectory } from "./directory.interface"
 import { MdFolder } from "react-icons/md"
 import { RiFolderOpenFill } from "react-icons/ri"
 import { MdInsertDriveFile } from "react-icons/md"

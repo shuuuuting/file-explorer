@@ -1,3 +1,4 @@
+import { ButtonAction } from "../context-menu"
 import { DirType } from "./directory.config"
 
 export interface IDirectory {
@@ -9,4 +10,9 @@ export interface IDirectory {
   isExpanded: boolean
   isVisible: boolean
   children: IDirectory[]
+}
+
+export interface ICacheDirectory { 
+  action: ButtonAction, 
+  dirData: IDirectory 
 }

@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { removeFileContent } from "#components/edit-pane/edit-pane.slice"
 import { addDir, removeDir, saveCachedInfo, saveWarningMsg, selectCachedDirInfo } from "#components/nav-bar/nav-bar.slice"
 import { DirType } from "../directory/directory.config"
-import { IDirectory } from "../directory/directory.type"
+import { IDirectory } from "../directory/directory.interface"
 import { replacePathPrefix, traverseAndModifyAll } from "../directory/directory.helper"
 import { v4 as uuidv4 } from "uuid"
 

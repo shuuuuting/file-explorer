@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { RootState } from "#app/store"
-import { IDirectory } from "./directory/directory.type"
+import { ICacheDirectory, IDirectory } from "./directory/directory.interface"
 import { DirType } from "./directory/directory.config"
 import { insertNewDir, pruneDirById, traverseAndModifyOne, updateDirNameById, updateVisibility } from "./directory/directory.helper"
 import { ButtonAction } from "./context-menu"
 
 export interface NavBarState {
   dirData: IDirectory,
-  cachedDirInfo?: { action: ButtonAction, dirData: IDirectory },
+  cachedDirInfo?: ICacheDirectory,
   searchTerm: string,
   openedMenuId?: string,
   warningMsg: string
@@ -31,27 +31,27 @@ export const navBarSlice = createSlice({
   name: "navbar",
   initialState,
   reducers: {
-    renameDir: (state, { payload }) => {
+    renameDir: (state, { payload }: { payload: { id: string, newName: string } }) => {
       state.dirData = updateDirNameById(
         state.dirData,
         payload.id,
         payload.newName
       )
     },
-    addDir: (state, { payload }) => {
+    addDir: (state, { payload }: { payload: { parentId: string, newDir: IDirectory } }) => {
       state.dirData = insertNewDir(
         state.dirData,
         payload.parentId,
         payload.newDir
       )
     },
-    removeDir: (state, { payload }) => {
+    removeDir: (state, { payload }: { payload: string }) => {
       state.dirData = pruneDirById(
         state.dirData, 
         payload
       )
     },
-    saveExpandedDir: (state, { payload }) => {
+    saveExpandedDir: (state, { payload }: { payload: { id: string, key: string, newData: any } }) => {
       state.dirData = traverseAndModifyOne(
         state.dirData, 
         payload.id, 
@@ -59,10 +59,10 @@ export const navBarSlice = createSlice({
         payload.newData
       )
     },
-    saveCachedInfo: (state, { payload }) => {
+    saveCachedInfo: (state, { payload }: { payload: ICacheDirectory | undefined }) => {
       state.cachedDirInfo = payload
     },
-    saveSearchTerm: (state, { payload }) => {
+    saveSearchTerm: (state, { payload }: { payload: string }) => {
       state.searchTerm = payload
     },
     searchDirs: (state) => {
@@ -71,10 +71,10 @@ export const navBarSlice = createSlice({
         state.searchTerm
       )
     },
-    saveOpenedMenuId: (state, { payload }) => {
+    saveOpenedMenuId: (state, { payload }: { payload: string | undefined }) => {
       state.openedMenuId = payload
     },
-    saveWarningMsg: (state, { payload }) => {
+    saveWarningMsg: (state, { payload }: { payload: string }) => {
       state.warningMsg = payload
     },
   },
