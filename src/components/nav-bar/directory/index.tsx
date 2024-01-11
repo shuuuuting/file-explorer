@@ -9,22 +9,18 @@ import { FiTrash } from "react-icons/fi"
 import { DirType } from "./directory.config"
 import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "#app/hooks"
-import { getFileType } from "./directory.helper"
-import { renameDir, addDir, removeDir, selectSearchTerm, selectOpenedMenuId, saveOpenedMenuId, saveExpandedDir, selectCachedDirInfo } from "#components/nav-bar/nav-bar.slice"
-import { addFileContent, addTab, removeFileContent, renameTab, saveActiveTabId, selectActiveTabId, selectFileById, selectShowedTabById } from "#components/edit-pane/edit-pane.slice"
-import { InitContent } from "#components/edit-pane/editor/editor.config"
+import { selectSearchTerm, selectOpenedMenuId, saveExpandedDir, selectCachedDirInfo } from "#components/nav-bar/nav-bar.slice"
+import { selectActiveTabId } from "#components/edit-pane/edit-pane.slice"
 import { ButtonAction, ContextMenu } from "../context-menu"
-import { v4 as uuidv4 } from "uuid"
+import { useEventHandler } from "./directory.hook"
 
 export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined, dirData: IDirectory }) => {
   const dispatch = useAppDispatch()
+  const activeTabId = useAppSelector(selectActiveTabId)
   const searchTerm = useAppSelector(selectSearchTerm)
   const isSearching = searchTerm.length > 0
-  const fileContent = useAppSelector(state => selectFileById(state, dirData.id)) 
   const cachedDirInfo = useAppSelector(selectCachedDirInfo)
   const isCutting = cachedDirInfo?.action === ButtonAction.CUT && cachedDirInfo.dirData.id === dirData.id
-  const activeTabId = useAppSelector(selectActiveTabId)
-  const showedTab = useAppSelector(state => selectShowedTabById(state, dirData.id))
   const isFolderType = dirData.type === DirType.FOLDER
   const { isExpanded, isVisible } = dirData
   const isMenuShow = useAppSelector(selectOpenedMenuId) === dirData.id
@@ -33,6 +29,9 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
   const defaultAddState = { isEditing: false, isFolder: false }
   const [addState, setAddState] = useState<{ isEditing: boolean, isFolder: boolean }>(defaultAddState)
   
+  const { handleClick, handleRightClick, handleRename, handleRenameKeyDown,
+          handleAdd, handleAddKeyDown, handleRemove } = useEventHandler( {parent, dirData })
+
   useEffect(() => {
     if (searchTerm) {
       dispatch(saveExpandedDir({ 
@@ -42,108 +41,6 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
       }))
     }
   }, [searchTerm])
-
-  const handleClick = () => {
-    if (!isMenuShow) {
-      if (isFolderType) {
-        dispatch(saveExpandedDir({ 
-          id: dirData.id, 
-          key: "isExpanded", 
-          newData: !isExpanded
-        }))
-      } else {
-        if (fileContent) {
-          if (!showedTab) {
-            dispatch(addTab({ id: dirData.id, name: dirData.name, isUnsaved: false }))
-          }
-        } else {
-          dispatch(addFileContent({
-            id: dirData.id, 
-            draftContent: InitContent[dirData.type as keyof typeof InitContent]
-          }))
-          dispatch(addTab({ id: dirData.id, name: dirData.name, isUnsaved: true }))
-        }
-        dispatch(saveActiveTabId(dirData.id))
-      }
-    }
-  }
-
-  const handleRightClick = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault()
-    dispatch(saveOpenedMenuId(dirData.id))
-  }
-
-  const handleRename = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation()
-    setIsRenaming(true)
-  }
-
-  const handleRenameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const newName = e.currentTarget.value
-    if (e.key === "Enter" && newName) {
-      if (parent && parent.children.map(child => child.name).includes(newName)) {
-        setIsNameInvalid(true)
-      } else {
-        setIsNameInvalid(false)
-        const renameInfo = { id: dirData.id, newName: e.currentTarget.value }
-        dispatch(renameDir(renameInfo))
-        if (!isFolderType) dispatch(renameTab(renameInfo))
-        setIsRenaming(false)
-      }
-    }
-  }
-
-  const handleAdd = (e: React.MouseEvent<HTMLElement>, isFolder: boolean) => {
-    e.stopPropagation()
-    setAddState({ isEditing: true, isFolder })
-  }
-
-  const handleAddKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, isFolder: boolean) => {
-    const newName = e.currentTarget.value
-    if (e.key === "Enter" && e.currentTarget.value) {
-      if (dirData.children.map(child => child.name).includes(newName)) {
-        setIsNameInvalid(true)
-      } else {
-        setIsNameInvalid(false)
-        let newDir: IDirectory = {
-          id: uuidv4(),
-          name: newName,
-          path: `${dirData.path}/${newName}`,
-          type: DirType.FOLDER,
-          isExpanded: false,
-          isVisible: true,
-          children: []
-        } 
-
-        if (!isFolder) {
-          const fileType = getFileType(newName)
-          newDir = { ...newDir, type: fileType }
-          dispatch(addFileContent({
-            id: newDir.id, 
-            draftContent: InitContent[fileType as keyof typeof InitContent]
-          }))
-          dispatch(addTab({ id: newDir.id, name: newDir.name, isUnsaved: true }))
-          dispatch(saveActiveTabId(newDir.id))
-        } 
-
-        dispatch(addDir({ parentId: dirData.id, newDir }))
-        setAddState(defaultAddState)
-        if (!isExpanded) {
-          dispatch(saveExpandedDir({ 
-            id: dirData.id, 
-            key: "isExpanded", 
-            newData: true
-          }))
-        }
-      }
-    }
-  }
-
-  const handleRemove = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation()
-    dispatch(removeDir(dirData.id))
-    dispatch(removeFileContent(dirData.id))
-  }
 
   return (
     <>
@@ -187,7 +84,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
               type="text"
               onBlur={() => {setIsRenaming(false); setIsNameInvalid(false)}}
               onClick={(e) => e.stopPropagation()}
-              onKeyDown={handleRenameKeyDown}
+              onKeyDown={(e) => handleRenameKeyDown(e, setIsNameInvalid, setIsRenaming)}
             />
           : <span className="navbar-item-text">
               {dirData.name}
@@ -197,7 +94,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
           <span className="navbar-item-action">
             <span 
               className="navbar-item-button"
-              onClick={handleRename}
+              onClick={(e) => handleRename(e, setIsRenaming)}
             >
               <FiEdit2 />
             </span>
@@ -205,13 +102,13 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
               <>
                 <span
                   className="navbar-item-button"
-                  onClick={(e) => handleAdd(e, true)}
+                  onClick={(e) => handleAdd(e, true, setAddState)}
                 >
                   <FiFolderPlus />
                 </span>
                 <span
                   className="navbar-item-button"
-                  onClick={(e) => handleAdd(e, false)}
+                  onClick={(e) => handleAdd(e, false, setAddState)}
                 >
                   <FiFilePlus />
                 </span>
@@ -239,7 +136,7 @@ export const Directory = ({ parent, dirData }: { parent: IDirectory | undefined,
               className="navbar-input-text" 
               type="text"
               onBlur={() => {setAddState(defaultAddState); setIsNameInvalid(false)}}
-              onKeyDown={(e) => handleAddKeyDown(e, addState.isFolder)}
+              onKeyDown={(e) => handleAddKeyDown(e, addState.isFolder, setIsNameInvalid, setAddState)}
             />
           </div>
         }

@@ -3,7 +3,7 @@ import React, { useEffect } from "react"
 import { SlClose } from "react-icons/sl";
 import { useAppDispatch, useAppSelector } from "#app/hooks"
 import { SearchBox } from "./search-box"
-import { Directory } from "./directory"
+import { Directory } from "./directory/index"
 import { saveOpenedMenuId, saveWarningMsg, selectDirData, selectWarningMsg } from "./nav-bar.slice"
 
 export const NavBar: React.FC = () => {

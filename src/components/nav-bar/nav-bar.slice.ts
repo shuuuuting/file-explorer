@@ -3,7 +3,6 @@ import { RootState } from "#app/store"
 import { ICacheDirectory, IDirectory } from "./directory/directory.interface"
 import { DirType } from "./directory/directory.config"
 import { insertNewDir, pruneDirById, traverseAndModifyOne, updateDirNameById, updateVisibility } from "./directory/directory.helper"
-import { ButtonAction } from "./context-menu"
 
 export interface NavBarState {
   dirData: IDirectory,
